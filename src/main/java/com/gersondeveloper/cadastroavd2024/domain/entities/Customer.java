@@ -1,20 +1,23 @@
 package com.gersondeveloper.cadastroavd2024.domain.entities;
 
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CustomerRequestDto;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
 @Table(name = "customers")
 @Entity
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Customer {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @NotNull("Name is required")
     private String name;
     @NotNull("Email is required")
@@ -27,4 +30,10 @@ public class Customer {
     private String createdBy = "Gerson C Filho";
     private LocalDateTime modificationDate;
     private String modifiedBy;
+
+    public Customer (CustomerRequestDto customerRequestDto){
+        this.name = customerRequestDto.name();
+        this.email = customerRequestDto.email();
+        this.phone = customerRequestDto.phone();
+    }
 }
