@@ -2,6 +2,7 @@ package com.gersondeveloper.cadastroavd2024.domain.entities;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CustomerRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,11 +19,14 @@ public class Customer {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NotNull("Name is required")
+
+    @NotBlank
+    @Column(unique = true)
     private String name;
-    @NotNull("Email is required")
+    @NotBlank
+    @Column(unique = true)
     private String email;
-    @NotNull("Phone is required")
+    @NotBlank
     private String phone;
     private boolean isActive = true;
     private LocalDateTime creationDate = LocalDateTime.now();

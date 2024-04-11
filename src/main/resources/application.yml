@@ -1,15 +1,17 @@
 spring:
-  application:
-    name: cadastro-avd-2024
   datasource:
-    url: jdbc:postgresql://localhost:5432/cadastro
-    username: postgres
-    password: admin
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:sqlserver://localhost:1433;databaseName=Cadastro2024;encrypt=false
+    username: sa
+    password: Teste_123#
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
-    show-sql: true
+      dialect: org.hibernate.dialect.SQLServerDialect
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+server:
+  port: 8080
