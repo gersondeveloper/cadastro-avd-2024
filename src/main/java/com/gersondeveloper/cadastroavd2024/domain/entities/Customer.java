@@ -7,18 +7,16 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Table(name = "customers")
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-public class Customer {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+
+public class Customer extends BaseEntity {
 
     @NotBlank
     @Column(unique = true)
@@ -29,15 +27,21 @@ public class Customer {
     @NotBlank
     private String phone;
     private boolean isActive = true;
-    private LocalDateTime creationDate = LocalDateTime.now();
-    //TODO: change after implement security
-    private String createdBy = "Gerson C Filho";
-    private LocalDateTime modificationDate;
-    private String modifiedBy;
+
 
     public Customer (CustomerRequestDto customerRequestDto){
         this.name = customerRequestDto.name();
         this.email = customerRequestDto.email();
         this.phone = customerRequestDto.phone();
+        this.creationDate = convertToDateViaInstant(customerRequestDto.creationDate());
+        this.createdBy = customerRequestDto.createdBy();
+        this.modificationDate = convertToDateViaInstant(customerRequestDto.modificationDate());
+        this.modifiedBy = customerRequestDto.modifiedBy();
+    }
+
+    private static LocalDateTime convertToDateViaInstant (Date dateToConvert) {
+            return dateToConvert != null ? dateToConvert.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime() : null;
     }
 }

@@ -3,8 +3,7 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CustomerRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CustomerResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.Customer;
-import com.gersondeveloper.cadastroavd2024.exceptions.CustomerNotFoundException;
-import com.gersondeveloper.cadastroavd2024.exceptions.ValidationException;
+import com.gersondeveloper.cadastroavd2024.exceptions.EntityNotFoundException;
 import com.gersondeveloper.cadastroavd2024.interfaces.CustomerRepository;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
@@ -41,13 +40,14 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseDto> getCustomerById(@PathVariable long id){
 
         var customer = repository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
+                .orElseThrow(() -> new EntityNotFoundException(id));
 
         return ResponseEntity.ok(new CustomerResponseDto(customer));
     }
 
     @PostMapping
     public ResponseEntity<CustomerResponseDto> createCustomer(@Valid @RequestBody CustomerRequestDto customerRequestDto) throws BadRequestException {
+
         repository.save(new Customer(customerRequestDto));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

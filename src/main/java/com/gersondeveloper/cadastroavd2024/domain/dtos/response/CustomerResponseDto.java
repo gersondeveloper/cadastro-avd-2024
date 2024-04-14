@@ -15,6 +15,14 @@ public record CustomerResponseDto(
         LocalDateTime modificationDate,
         String modifiedBy) {
     public CustomerResponseDto(Customer customer) {
-        this(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone(), customer.isActive(), customer.getModificationDate(), customer.getModifiedBy(), customer.getCreationDate(), customer.getCreatedBy());
+        this(customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhone(),
+                customer.isActive(),
+                customer.getCreationDate(),
+                customer.getCreatedBy(),
+                customer.getModificationDate(),
+                customer.getModifiedBy());
     }
 }

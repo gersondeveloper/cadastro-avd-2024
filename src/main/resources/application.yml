@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=Cadastro2024;encrypt=false
-    username: sa
+    username: cadastro
     password: Teste_123#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:

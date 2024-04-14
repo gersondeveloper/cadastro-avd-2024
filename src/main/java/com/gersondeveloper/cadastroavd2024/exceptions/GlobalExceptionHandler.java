@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 class GlobalExceptionHandler {
 
     @ResponseBody
-    @ExceptionHandler(CustomerNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String customerNotFoundHandler(CustomerNotFoundException ex) {
+    String customerNotFoundHandler(EntityNotFoundException ex) {
         return ex.getMessage();
     }
 
