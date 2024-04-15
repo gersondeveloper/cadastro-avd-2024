@@ -1,10 +1,10 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities;
+package com.gersondeveloper.cadastroavd2024.domain.entities.customer;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CustomerRequestDto;
+import com.gersondeveloper.cadastroavd2024.domain.entities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

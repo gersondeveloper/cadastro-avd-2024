@@ -1,6 +1,6 @@
 package com.gersondeveloper.cadastroavd2024.domain.dtos.response;
 
-import com.gersondeveloper.cadastroavd2024.domain.entities.Customer;
+import com.gersondeveloper.cadastroavd2024.domain.entities.customer.Customer;
 
 import java.time.LocalDateTime;
 

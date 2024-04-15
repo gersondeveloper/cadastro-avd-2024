@@ -4,6 +4,7 @@ spring:
     username: cadastro
     password: Teste_123#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
   jpa:
     show-sql: true
     hibernate:
@@ -15,3 +16,8 @@ spring:
 
 server:
   port: 8080
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}

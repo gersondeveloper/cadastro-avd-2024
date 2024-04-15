@@ -2,7 +2,7 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CustomerRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CustomerResponseDto;
-import com.gersondeveloper.cadastroavd2024.domain.entities.Customer;
+import com.gersondeveloper.cadastroavd2024.domain.entities.customer.Customer;
 import com.gersondeveloper.cadastroavd2024.exceptions.EntityNotFoundException;
 import com.gersondeveloper.cadastroavd2024.interfaces.CustomerRepository;
 import jakarta.validation.Valid;
