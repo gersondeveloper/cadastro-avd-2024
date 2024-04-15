@@ -14,9 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 
 @RestController
 @RequestMapping("auth")
@@ -44,8 +42,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid UserRegisterDto data) {
 
-
-
         if(this.userRepository.findByLogin(data.login()) != null)
             return ResponseEntity.badRequest().build();
 
@@ -57,16 +53,6 @@ public class AuthenticationController {
             var message = ex.getMessage();
             return ResponseEntity.badRequest().body(message);
         }
-//TODO: refactorar retornando um created inves de ok
-
-//        var userCreatedId = this.userRepository.findByLogin(data.login());
-//
-//        URI location = ServletUriComponentsBuilder
-//                .fromCurrentRequest()
-//                .path("/{userCreated.id}")
-//                .buildAndExpand()
-//                .toUri();
-
         return ResponseEntity.ok().build();
     }
 
