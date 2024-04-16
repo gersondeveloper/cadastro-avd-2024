@@ -1,4 +1,4 @@
-package com.gersondeveloper.cadastroavd2024.infra.security;
+package com.gersondeveloper.cadastroavd2024.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

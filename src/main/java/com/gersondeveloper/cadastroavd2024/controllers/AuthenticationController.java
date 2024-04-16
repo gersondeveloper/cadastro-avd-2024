@@ -1,10 +1,10 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.LoginResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.LoginResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.user.User;
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.UserAuthenticationDto;
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.UserRegisterDto;
-import com.gersondeveloper.cadastroavd2024.infra.security.TokenService;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserAuthenticationRequestDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
+import com.gersondeveloper.cadastroavd2024.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class AuthenticationController {
     TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid UserAuthenticationDto data){
+    public ResponseEntity login(@RequestBody @Valid UserAuthenticationRequestDto data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = authenticationManager.authenticate(usernamePassword);
 
@@ -40,7 +40,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid UserRegisterDto data) {
+    public ResponseEntity register(@RequestBody @Valid UserRegisterRequestDto data) {
 
         if(this.userRepository.findByLogin(data.login()) != null)
             return ResponseEntity.badRequest().build();
