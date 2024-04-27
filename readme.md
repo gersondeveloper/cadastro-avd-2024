@@ -5,3 +5,6 @@ conectar a base criada com Azure Data Studio
 criar database
 criar usuario
 dar grant ao usuario
+
+
+open-api: localhost:8080/api-docs

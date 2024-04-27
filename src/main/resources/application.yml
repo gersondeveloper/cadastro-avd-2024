@@ -21,3 +21,8 @@ api:
   security:
     token:
       secret: ${JWT_SECRET:my-secret-key}
+
+springdoc:
+  api-docs:
+    path:
+      /api-docs
