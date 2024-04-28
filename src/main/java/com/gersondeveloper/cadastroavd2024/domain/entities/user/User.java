@@ -26,13 +26,17 @@ public class User implements UserDetails {
     private String login;
 
     @NotBlank
+    private String name;
+
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
 
-    public User(String login, String encryptedPassword, UserRole role) {
+    public User(String login, String name, String encryptedPassword, UserRole role) {
         this.login = login;
+        this.name = name;
         this.password = encryptedPassword;
         this.role = role;
     }

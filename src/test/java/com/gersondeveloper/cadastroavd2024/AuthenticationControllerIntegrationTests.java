@@ -58,7 +58,7 @@ public class AuthenticationControllerIntegrationTests {
     @Test
     public void testSuccessfulRegisterEndpoint() throws Exception {
         // Prepare request body
-        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com", "password", UserRole.ADMIN);
+        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com", "Gerson Filho", "password", UserRole.ADMIN);
         String requestBody = objectMapper.writeValueAsString(registerRequest);
 
         // Perform POST request to /register endpoint
@@ -71,7 +71,7 @@ public class AuthenticationControllerIntegrationTests {
     @Test
     public void testUnSuccessfulRegisterEndpoint() throws Exception {
         // Prepare request body
-        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com", "password", null);
+        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com", "","password", null);
         String requestBody = objectMapper.writeValueAsString(registerRequest);
 
         // Perform POST request to /register endpoint
@@ -84,7 +84,7 @@ public class AuthenticationControllerIntegrationTests {
     @Test
     public void testLoginSuccessfulEndpoint() throws Exception{
         // Prepare register user
-        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com", "password", UserRole.ADMIN);
+        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com","Gerson Filho", "password", UserRole.ADMIN);
         String requestBody = objectMapper.writeValueAsString(registerRequest);
 
         // Prepare login
@@ -100,7 +100,7 @@ public class AuthenticationControllerIntegrationTests {
     @Test
     public void testLoginUnsuccessfulEndpoint() throws Exception{
         // Prepare register user
-        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com", "password2", UserRole.ADMIN);
+        UserRegisterRequestDto registerRequest = new UserRegisterRequestDto("teste@teste.com","Gerson Filho", "password2", UserRole.ADMIN);
         String requestBody = objectMapper.writeValueAsString(registerRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/auth/register")

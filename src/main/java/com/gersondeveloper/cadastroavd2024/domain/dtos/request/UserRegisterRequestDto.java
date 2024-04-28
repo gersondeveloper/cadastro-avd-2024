@@ -4,6 +4,7 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.user.UserRole;
 
 public record UserRegisterRequestDto(
         String login,
+        String name,
         String password,
         UserRole role) {
 }
