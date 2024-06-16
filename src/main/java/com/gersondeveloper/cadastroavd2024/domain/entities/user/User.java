@@ -23,6 +23,7 @@ public class User implements UserDetails {
     private Long id;
 
     @NotBlank
+    @Column(unique = true)
     private String login;
 
     @NotBlank

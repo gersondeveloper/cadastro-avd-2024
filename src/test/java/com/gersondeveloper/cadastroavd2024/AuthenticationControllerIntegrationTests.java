@@ -106,7 +106,7 @@ public class AuthenticationControllerIntegrationTests {
         mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         // Prepare login
         UserAuthenticationRequestDto userAuthenticationRequestDto = new UserAuthenticationRequestDto("teste3434@teste.com", "password");

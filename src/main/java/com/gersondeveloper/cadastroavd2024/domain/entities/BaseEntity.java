@@ -1,13 +1,18 @@
 package com.gersondeveloper.cadastroavd2024.domain.entities;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @MappedSuperclass
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
