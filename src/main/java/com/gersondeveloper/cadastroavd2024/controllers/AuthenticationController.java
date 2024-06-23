@@ -1,20 +1,29 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.User;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserAuthenticationRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
-import com.gersondeveloper.cadastroavd2024.services.TokenService;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
+import com.gersondeveloper.cadastroavd2024.domain.entities.user.User;
 import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 @RestController
@@ -31,32 +40,50 @@ public class AuthenticationController {
     TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid UserAuthenticationRequestDto data){
+    public ResponseEntity login(@RequestBody @Valid UserAuthenticationRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = authenticationManager.authenticate(usernamePassword);
+
+        Authentication auth = null;
+        try {
+            auth = authenticationManager.authenticate(usernamePassword);
+        } catch (AuthenticationException e) {
+            throw new RuntimeException(e);
+        }
 
         var userDetails = (UserDetails) auth.getPrincipal();
-
         var token = tokenService.generateToken((User) auth.getPrincipal());
-
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid UserRegisterRequestDto data) {
+    public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
 
-         if(this.userRepository.findByLogin(data.login()) != null)
-            return ResponseEntity.badRequest().build();
+        UserCreateResponse response = new UserCreateResponse();
+
+        if (this.userRepository.findByLogin(data.login()) != null) {
+            response.setStatus(409);
+            response.setStatusText("Usuário já existe");
+            response.setOk(false);
+            return ResponseEntity.badRequest().body(response);
+        }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(data.login(), data.name(), encryptedPassword, data.role());
-        try{
+        try {
             this.userRepository.save(newUser);
         } catch (DataAccessException ex) {
-            var message = ex.getMessage();
-            return ResponseEntity.badRequest().body(message);
+            response.setStatus(400);
+            response.setOk(false);
+            response.setOk(false);
+            response.setStatusText(ex.getMessage());
+
+            return ResponseEntity.badRequest().body(response);
         }
-        return ResponseEntity.ok().build();
+        response.setStatus(201);
+        response.setStatusText("Usuário criado com sucesso!");
+        response.setOk(true);
+        response.setUrl("/register/" + newUser.getId());
+        return ResponseEntity.created(new URI(response.getUrl())).body(response);
     }
 
 }
