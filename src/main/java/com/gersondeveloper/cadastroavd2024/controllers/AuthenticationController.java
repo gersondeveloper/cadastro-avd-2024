@@ -8,6 +8,7 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.user.User;
 import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
 import com.gersondeveloper.cadastroavd2024.services.TokenService;
 import jakarta.validation.Valid;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -61,10 +62,7 @@ public class AuthenticationController {
         UserCreateResponse response = new UserCreateResponse();
 
         if (this.userRepository.findByLogin(data.login()) != null) {
-            response.setStatus(409);
-            response.setStatusText("Usuário já existe");
-            response.setOk(false);
-            return ResponseEntity.badRequest().body(response);
+            return getUserAlreadyexistsCreateResponseResponseEntity(response);
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
@@ -72,18 +70,29 @@ public class AuthenticationController {
         try {
             this.userRepository.save(newUser);
         } catch (DataAccessException ex) {
-            response.setStatus(400);
-            response.setOk(false);
-            response.setOk(false);
-            response.setStatusText(ex.getMessage());
-
-            return ResponseEntity.badRequest().body(response);
+            return getBadRequestUserCreateResponseResponseEntity(ex, response);
         }
         response.setStatus(201);
         response.setStatusText("Usuário criado com sucesso!");
         response.setOk(true);
         response.setUrl("/register/" + newUser.getId());
         return ResponseEntity.created(new URI(response.getUrl())).body(response);
+    }
+
+    private static @NotNull ResponseEntity<UserCreateResponse> getBadRequestUserCreateResponseResponseEntity(DataAccessException ex, UserCreateResponse response) {
+        response.setStatus(400);
+        response.setOk(false);
+        response.setOk(false);
+        response.setStatusText(ex.getMessage());
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    private static @NotNull ResponseEntity<UserCreateResponse> getUserAlreadyexistsCreateResponseResponseEntity(UserCreateResponse response) {
+        response.setStatus(409);
+        response.setStatusText("Usuário já existe");
+        response.setOk(false);
+        return ResponseEntity.badRequest().body(response);
     }
 
 }

@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres_cadastro
+    environment:
+      POSTGRES_USER: cadastro
+      POSTGRES_PASSWORD: "Teste_123#"
+      POSTGRES_DB: cadastro_avd_2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - cadastro_postgres_data:/var/lib/postgresql/data
+      - ./docker/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cadastro -d cadastro_avd_2025"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  cadastro_postgres_data:
