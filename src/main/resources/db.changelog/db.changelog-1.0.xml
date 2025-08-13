@@ -39,7 +39,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="login" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
             <column name="name" type="varchar(255)"/>
             <column name="password" type="varchar(255)"/>
         </createTable>
@@ -47,8 +47,8 @@
 
     <changeSet id="5" author="gerson.filho">
         <addUniqueConstraint tableName="users"
-                             columnNames="login"
-                             constraintName="uc_users_login"/>
+                             columnNames="email"
+                             constraintName="uc_users_email"/>
     </changeSet>
 
     <changeSet id="6" author="gerson.filho">
@@ -56,7 +56,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="login" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
             <column name="name" type="varchar(255)"/>
             <column name="password" type="varchar(255)"/>
         </createTable>
@@ -64,7 +64,7 @@
 
     <changeSet id="7" author="gerson.filho">
         <addUniqueConstraint tableName="profiles"
-                             columnNames="login"
-                             constraintName="uc_profiles_login"/>
+                             columnNames="email"
+                             constraintName="uc_profiles_email"/>
     </changeSet>
 </databaseChangeLog>

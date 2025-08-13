@@ -1,6 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.domain.entities.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,8 @@ public class User implements UserDetails {
 
     @NotBlank
     @Column(unique = true)
-    private String login;
+    @Email
+    private String email;
 
     @NotBlank
     private String name;
@@ -35,8 +37,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
 
-    public User(String login, String name, String encryptedPassword, UserRole role) {
-        this.login = login;
+    public User(String email, String name, String encryptedPassword, UserRole role) {
+        this.email = email;
         this.name = name;
         this.password = encryptedPassword;
         this.role = role;
@@ -52,7 +54,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override

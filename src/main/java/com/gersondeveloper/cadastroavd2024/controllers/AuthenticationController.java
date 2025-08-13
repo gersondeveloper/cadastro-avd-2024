@@ -40,7 +40,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid UserAuthenticationRequestDto data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
         Authentication auth = null;
         try {
@@ -59,12 +59,12 @@ public class AuthenticationController {
 
         UserCreateResponse response = new UserCreateResponse();
 
-        if (this.userRepository.findByLogin(data.login()) != null) {
+        if (this.userRepository.findByEmail(data.email()) != null) {
             return getUserAlreadyexistsCreateResponseResponseEntity(response);
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), data.name(), encryptedPassword, data.role());
+        User newUser = new User(data.email(), data.name(), encryptedPassword, data.role());
         try {
             this.userRepository.save(newUser);
         } catch (DataAccessException ex) {
