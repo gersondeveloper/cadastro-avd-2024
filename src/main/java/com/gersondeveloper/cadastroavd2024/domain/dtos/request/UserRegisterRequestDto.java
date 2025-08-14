@@ -1,6 +1,6 @@
 package com.gersondeveloper.cadastroavd2024.domain.dtos.request;
 
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.UserRole;
+import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 
 public record UserRegisterRequestDto(
         String email,

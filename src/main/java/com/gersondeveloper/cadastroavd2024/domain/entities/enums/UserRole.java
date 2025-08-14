@@ -1,11 +1,12 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.user;
+package com.gersondeveloper.cadastroavd2024.domain.entities.enums;
 
 import lombok.Getter;
 
 @Getter
 public enum UserRole {
     ADMIN("admin"),
-    USER("user");
+    USER("user"),
+    CUSTOMER("customer");
 
     private final String role;
 

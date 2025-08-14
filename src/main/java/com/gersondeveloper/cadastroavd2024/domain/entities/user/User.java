@@ -1,21 +1,25 @@
 package com.gersondeveloper.cadastroavd2024.domain.entities.user;
 
+import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Table(name = "users")
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -37,6 +41,16 @@ public class User implements UserDetails {
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
 
+    // Customer-related fields
+    private String phone;
+    private boolean isActive = true;
+
+    // Audit fields similar to BaseEntity to support customer data without separate entity
+    private LocalDateTime creationDate;
+    private String createdBy;
+    private LocalDateTime modificationDate;
+    private String modifiedBy;
+
     public User(String email, String name, String encryptedPassword, UserRole role) {
         this.email = email;
         this.name = name;
@@ -44,10 +58,19 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN){
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+        } else if (this.role == UserRole.CUSTOMER) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_CUSTOMER"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
         }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }

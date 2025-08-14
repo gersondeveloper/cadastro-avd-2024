@@ -67,4 +67,11 @@
                              columnNames="email"
                              constraintName="uc_profiles_email"/>
     </changeSet>
+    
+    <changeSet id="8" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="customers"/>
+        </preConditions>
+        <dropTable tableName="customers"/>
+    </changeSet>
 </databaseChangeLog>
