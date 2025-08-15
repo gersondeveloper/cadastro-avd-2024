@@ -1,4 +1,4 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.cliente;
+package com.gersondeveloper.cadastroavd2024.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

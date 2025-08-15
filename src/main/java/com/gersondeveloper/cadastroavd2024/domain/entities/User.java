@@ -1,4 +1,4 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.user;
+package com.gersondeveloper.cadastroavd2024.domain.entities;
 
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import jakarta.persistence.*;

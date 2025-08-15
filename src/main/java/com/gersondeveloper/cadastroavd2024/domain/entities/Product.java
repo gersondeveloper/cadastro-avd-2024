@@ -1,4 +1,4 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.product;
+package com.gersondeveloper.cadastroavd2024.domain.entities;
 
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBase;
 import jakarta.persistence.Entity;

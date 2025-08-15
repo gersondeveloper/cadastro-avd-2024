@@ -1,7 +1,5 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.serviceOrder;
+package com.gersondeveloper.cadastroavd2024.domain.entities;
 
-import com.gersondeveloper.cadastroavd2024.domain.entities.BaseEntity;
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,9 +18,9 @@ import java.time.LocalTime;
  *   upfront_payment_value numeric(12,2),
  *   balance numeric(12,2),
  *   contact varchar(120),
- *   instalation_date date,
- *   intalation_time time,
- *   instalation_location varchar(255),
+ *   installation_date date,
+ *   installation_time time,
+ *   installation_location varchar(255),
  *   observation text,
  *   service_description text,
  *   status varchar(20) not null default 'DRAFT',
@@ -55,15 +53,14 @@ public class ServiceOrder extends BaseEntity {
     @Column(name = "contact", length = 120)
     private String contact;
 
-    @Column(name = "instalation_date")
-    private LocalDate instalationDate;
+    @Column(name = "installation_date")
+    private LocalDate installationDate;
 
-    // Note: the column name has a typo in the DDL ("intalation_time" without 's'). We map it literally.
-    @Column(name = "intalation_time")
-    private LocalTime intalationTime;
+    @Column(name = "installation_time")
+    private LocalTime installationTime;
 
-    @Column(name = "instalation_location", length = 255)
-    private String instalationLocation;
+    @Column(name = "installation_location", length = 255)
+    private String installationLocation;
 
     @Column(name = "observation", columnDefinition = "text")
     private String observation;

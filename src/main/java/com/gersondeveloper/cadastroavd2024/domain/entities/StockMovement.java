@@ -1,11 +1,7 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.stockMovement;
+package com.gersondeveloper.cadastroavd2024.domain.entities;
 
-import com.gersondeveloper.cadastroavd2024.domain.entities.BaseEntity;
-import com.gersondeveloper.cadastroavd2024.domain.entities.batch.Batch;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.LocalType;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.MovementType;
-import com.gersondeveloper.cadastroavd2024.domain.entities.product.Product;
-import com.gersondeveloper.cadastroavd2024.domain.entities.productVariant.ProductVariant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

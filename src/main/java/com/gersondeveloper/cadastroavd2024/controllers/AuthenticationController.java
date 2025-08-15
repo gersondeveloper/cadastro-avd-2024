@@ -4,7 +4,7 @@ import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserAuthenticatio
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
-import com.gersondeveloper.cadastroavd2024.domain.entities.user.User;
+import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
 import com.gersondeveloper.cadastroavd2024.services.TokenService;
 import jakarta.validation.Valid;

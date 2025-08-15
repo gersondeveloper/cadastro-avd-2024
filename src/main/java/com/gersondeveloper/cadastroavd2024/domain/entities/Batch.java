@@ -1,8 +1,5 @@
-package com.gersondeveloper.cadastroavd2024.domain.entities.batch;
+package com.gersondeveloper.cadastroavd2024.domain.entities;
 
-import com.gersondeveloper.cadastroavd2024.domain.entities.BaseEntity;
-import com.gersondeveloper.cadastroavd2024.domain.entities.product.Product;
-import com.gersondeveloper.cadastroavd2024.domain.entities.productVariant.ProductVariant;
 import jakarta.persistence.*;
 import lombok.*;
 
