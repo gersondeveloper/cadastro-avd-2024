@@ -57,10 +57,8 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
 
-        UserCreateResponse response = new UserCreateResponse();
-
         if (this.userRepository.findByEmail(data.email()) != null) {
-            return getUserAlreadyexistsCreateResponseResponseEntity(response);
+            return getUserAlreadyexistsCreateResponseResponseEntity();
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
@@ -68,28 +66,20 @@ public class AuthenticationController {
         try {
             this.userRepository.save(newUser);
         } catch (DataAccessException ex) {
-            return getBadRequestUserCreateResponseResponseEntity(ex, response);
+            return getBadRequestUserCreateResponseResponseEntity(ex);
         }
-        response.setStatus(201);
-        response.setStatusText("Usuário criado com sucesso!");
-        response.setOk(true);
-        response.setUrl("/register/" + newUser.getId());
-        return ResponseEntity.created(new URI(response.getUrl())).body(response);
+        String url = "/register/" + newUser.getId();
+        UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
+        return ResponseEntity.created(new URI(url)).body(response);
     }
 
-    private static @NotNull ResponseEntity<UserCreateResponse> getBadRequestUserCreateResponseResponseEntity(DataAccessException ex, UserCreateResponse response) {
-        response.setStatus(400);
-        response.setOk(false);
-        response.setOk(false);
-        response.setStatusText(ex.getMessage());
-
+    private static @NotNull ResponseEntity<UserCreateResponse> getBadRequestUserCreateResponseResponseEntity(DataAccessException ex) {
+        UserCreateResponse response = new UserCreateResponse(400, ex.getMessage(), false, null);
         return ResponseEntity.badRequest().body(response);
     }
 
-    private static @NotNull ResponseEntity<UserCreateResponse> getUserAlreadyexistsCreateResponseResponseEntity(UserCreateResponse response) {
-        response.setStatus(409);
-        response.setStatusText("Usuário já existe");
-        response.setOk(false);
+    private static @NotNull ResponseEntity<UserCreateResponse> getUserAlreadyexistsCreateResponseResponseEntity() {
+        UserCreateResponse response = new UserCreateResponse(409, "User already created!", false, null);
         return ResponseEntity.badRequest().body(response);
     }
 
