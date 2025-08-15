@@ -1,0 +1,65 @@
+name: Build & Push Docker to GHCR (Java 17)
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*.*.*' ]  # publica com a tag do release também
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+  packages: write    # necessário para publicar no GHCR
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }} # ex: owner/repo
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # (Opcional) Descobrir a versão do pom para tag
+      - name: Read Maven project.version
+        id: mvnver
+        run: echo "version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Gera tags e labels automaticamente (latest, SHA, versão do pom, tag de release)
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha
+            type=ref,event=tag
+            type=raw,value=${{ steps.mvnver.outputs.version }}
+          labels: |
+            org.opencontainers.image.source=${{ github.repositoryUrl }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # cache para acelerar builds
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
