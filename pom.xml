@@ -14,8 +14,8 @@
     <name>cadastro-avd-2024</name>
     <description>Cadastro AVD 2024</description>
     <properties>
-            <java.version>17</java.version>
-            <maven.compiler.release>17</maven.compiler.release>
+            <java.version>22</java.version>
+            <maven.compiler.release>22</maven.compiler.release>
             <lombok.version>1.18.36</lombok.version>
             <mapstruct.version>1.6.3</mapstruct.version>
         <java-jwt.version>4.4.0</java-jwt.version>
@@ -126,8 +126,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source> <!-- Use your JDK version -->
-                    <target>${java.version}</target> <!-- Use your JDK version -->
+                    <source>21</source> <!-- Use your JDK version -->
+                    <target>21</target>
+                    <compilerArgs>--enable-preview</compilerArgs> <!-- Use your JDK version -->
                 </configuration>
             </plugin>
             <plugin>

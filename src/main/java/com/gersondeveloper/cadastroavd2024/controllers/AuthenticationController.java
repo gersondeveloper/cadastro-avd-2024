@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -30,6 +31,9 @@ import java.net.URISyntaxException;
 public class AuthenticationController {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
@@ -39,14 +43,15 @@ public class AuthenticationController {
     TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid UserAuthenticationRequestDto data) {
+    public ResponseEntity<?> login(@RequestBody @Valid UserAuthenticationRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
-        Authentication auth = null;
+        Authentication auth;
         try {
             auth = authenticationManager.authenticate(usernamePassword);
         } catch (AuthenticationException e) {
-            throw new RuntimeException(e);
+            // Return 401 Unauthorized for bad credentials instead of 500
+            return ResponseEntity.status(401).body("Invalid email or password");
         }
 
         var userDetails = (UserDetails) auth.getPrincipal();
@@ -61,7 +66,7 @@ public class AuthenticationController {
             return getUserAlreadyexistsCreateResponseResponseEntity();
         }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+        String encryptedPassword = passwordEncoder.encode(data.password());
         User newUser = new User(data.email(), data.name(), encryptedPassword, data.role());
         try {
             this.userRepository.save(newUser);
