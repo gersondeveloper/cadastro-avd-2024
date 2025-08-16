@@ -1,6 +1,6 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserAuthenticationRequestDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserLoginRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
@@ -17,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +42,7 @@ public class AuthenticationController {
     TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid UserAuthenticationRequestDto data) {
+    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
         Authentication auth;
