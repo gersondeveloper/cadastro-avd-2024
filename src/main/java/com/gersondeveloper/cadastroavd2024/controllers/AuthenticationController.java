@@ -66,7 +66,7 @@ public class AuthenticationController {
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());
-        User newUser = new User(data.email(), data.name(), encryptedPassword, data.role());
+        User newUser = User.builder().email(data.email()).name(data.name()).password(encryptedPassword).role(data.role()).build();
         try {
             this.userRepository.save(newUser);
         } catch (DataAccessException ex) {

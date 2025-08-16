@@ -19,6 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +33,8 @@ public class User implements UserDetails {
     @NotBlank
     private String name;
 
+    private String contactName;
+
     @NotBlank
     private String password;
 
@@ -43,18 +46,11 @@ public class User implements UserDetails {
     private boolean isActive = true;
 
     // Audit fields similar to BaseEntity to support customer data without separate entity
-    private LocalDateTime creationDate;
+    @Builder.Default
+    private LocalDateTime creationDate = LocalDateTime.now();
     private String createdBy;
     private LocalDateTime modificationDate;
     private String modifiedBy;
-
-    public User(String email, String name, String encryptedPassword, UserRole role) {
-        this.email = email;
-        this.name = name;
-        this.password = encryptedPassword;
-        this.role = role;
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
