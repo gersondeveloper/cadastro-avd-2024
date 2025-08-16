@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
 
 
 @RestController
@@ -49,7 +50,6 @@ public class AuthenticationController {
         try {
             auth = authenticationManager.authenticate(usernamePassword);
         } catch (AuthenticationException e) {
-            // Return 401 Unauthorized for bad credentials instead of 500
             return ResponseEntity.status(401).body("Invalid email or password");
         }
 
@@ -72,7 +72,7 @@ public class AuthenticationController {
         } catch (DataAccessException ex) {
             return getBadRequestUserCreateResponseResponseEntity(ex);
         }
-        String url = "/register/" + newUser.getId();
+        String url = MessageFormat.format("/register/{0}", newUser.getId());
         UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
         return ResponseEntity.created(new URI(url)).body(response);
     }
