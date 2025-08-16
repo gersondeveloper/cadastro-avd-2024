@@ -12,8 +12,8 @@ public class CustomerService {
     private UserRepository repository;
 
     public void save(User user) {
-        if (user.getId() == null) {
-            throw new IllegalArgumentException("User cannot be created");
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
         }
         repository.save(user);
     }
