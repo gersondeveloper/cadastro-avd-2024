@@ -41,13 +41,18 @@ public class User implements UserDetails {
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
 
-    // Customer-related fields
     private String phone;
     private boolean isActive = true;
 
-    // Audit fields similar to BaseEntity to support customer data without separate entity
-    @Builder.Default
-    private LocalDateTime creationDate = LocalDateTime.now();
+    @PrePersist
+    public void prePersist(){
+        if (this.id == null) {
+            this.creationDate = LocalDateTime.now();
+            this.isActive = true;
+        }
+    }
+
+    private LocalDateTime creationDate;
     private String createdBy;
     private LocalDateTime modificationDate;
     private String modifiedBy;
