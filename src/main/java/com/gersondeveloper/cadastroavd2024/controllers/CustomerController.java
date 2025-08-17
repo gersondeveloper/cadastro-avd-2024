@@ -1,8 +1,10 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateCustomerRequestDto;
+import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.mappers.CustomerMapper;
 import com.gersondeveloper.cadastroavd2024.services.CustomerService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class CustomerController {
     @Autowired
     private CustomerMapper customerMapper;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid CreateCustomerRequestDto request) {
         if(request != null) {
@@ -28,5 +31,11 @@ public class CustomerController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok().body(customerService.findAllByRole(UserRole.CUSTOMER));
     }
 }
