@@ -14,9 +14,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,24 +26,21 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
-    void shouldCreateANewCustomerAndReturn200WithAuth() throws Exception {
-        // 1) Register a user for authentication
-        String email = "test.user.customer@test.com";
+    private String obtainToken(UserRole role) throws Exception {
+        String email = "user_" + role.name().toLowerCase() + System.currentTimeMillis() + "@test.com";
         String password = "Secret123!";
 
         Map<String, Object> register = new HashMap<>();
         register.put("email", email);
-        register.put("name", "Test User");
+        register.put("name", "Test User " + role.name());
         register.put("password", password);
-        register.put("role", UserRole.ADMIN.name());
+        register.put("role", role.name());
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(register)))
                 .andExpect(status().isCreated());
 
-        // 2) Login and get JWT token
         Map<String, Object> login = new HashMap<>();
         login.put("email", email);
         login.put("password", password);
@@ -55,22 +52,78 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.token").isNotEmpty())
                 .andReturn();
 
-        String token = objectMapper.readTree(loginResult.getResponse().getContentAsString()).get("token").asText();
+        return objectMapper.readTree(loginResult.getResponse().getContentAsString()).get("token").asText();
+    }
 
-        // 3) Prepare customer payload
+    private Map<String, Object> validCustomerPayload() {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("email", "johnCustomer@teste.com");
-        payload.put("name", "John Doe The Customer");
+        payload.put("email", "customer_" + System.currentTimeMillis() + "@test.com");
+        payload.put("name", "John Customer");
         payload.put("password", "Teste123");
         payload.put("role", UserRole.CUSTOMER.name());
         payload.put("phone", "913995497");
-        payload.put("contactName", "Gerson Filho");
+        payload.put("contactName", "Contact Person");
+        return payload;
+    }
 
-        // 4) Call protected endpoint with Authorization header
+    // Happy path: admin creates a new customer
+    @Test
+    void shouldCreateANewCustomerAndReturn200WithAdminAuth() throws Exception {
+        String adminToken = obtainToken(UserRole.ADMIN);
+
         mockMvc.perform(post("/api/customer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token)
-                        .content(toJson(payload)))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .content(toJson(validCustomerPayload())))
                 .andExpect(status().isOk());
+    }
+
+    // Edge: missing Authorization header
+    @Test
+    void shouldRejectCreateCustomerWithoutAuthorization() throws Exception {
+        mockMvc.perform(post("/api/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(validCustomerPayload())))
+                .andExpect(status().isForbidden());
+    }
+
+    // Edge: authenticated as CUSTOMER (not ADMIN)
+    @Test
+    void shouldForbidCreateCustomerWithCustomerRole() throws Exception {
+        String customerToken = obtainToken(UserRole.CUSTOMER);
+
+        mockMvc.perform(post("/api/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + customerToken)
+                        .content(toJson(validCustomerPayload())))
+                .andExpect(status().isForbidden());
+    }
+
+    // Edge: admin but missing request body
+    @Test
+    void shouldReturnBadRequestWhenMissingRequestBody() throws Exception {
+        String adminToken = obtainToken(UserRole.ADMIN);
+
+        mockMvc.perform(post("/api/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isBadRequest());
+    }
+
+    // Happy: list customers with admin auth
+    @Test
+    void shouldListCustomersWithAdminAuth() throws Exception {
+        String adminToken = obtainToken(UserRole.ADMIN);
+
+        mockMvc.perform(get("/api/customer")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk());
+    }
+
+    // Edge: list customers without auth
+    @Test
+    void shouldRejectListCustomersWithoutAuthorization() throws Exception {
+        mockMvc.perform(get("/api/customer"))
+                .andExpect(status().isForbidden());
     }
 }

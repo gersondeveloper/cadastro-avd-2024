@@ -1,6 +1,6 @@
-package com.gersondeveloper.cadastroavd2024.services;
+package com.gersondeveloper.cadastroavd2024.infra.services;
 
-import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

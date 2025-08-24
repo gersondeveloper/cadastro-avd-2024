@@ -5,8 +5,8 @@ import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterReque
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
-import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
-import com.gersondeveloper.cadastroavd2024.services.TokenService;
+import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.text.MessageFormat;
 
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping({"/api/auth", "/api/v1/auth"})
 @CrossOrigin(value = "http://localhost:4200")
 public class AuthenticationController {
 

@@ -1,9 +1,9 @@
-package com.gersondeveloper.cadastroavd2024.services;
+package com.gersondeveloper.cadastroavd2024.infra.services;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CustomerResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
-import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

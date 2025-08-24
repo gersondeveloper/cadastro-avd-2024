@@ -1,4 +1,4 @@
-package com.gersondeveloper.cadastroavd2024.services;
+package com.gersondeveloper.cadastroavd2024.infra.services;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
 import lombok.AllArgsConstructor;

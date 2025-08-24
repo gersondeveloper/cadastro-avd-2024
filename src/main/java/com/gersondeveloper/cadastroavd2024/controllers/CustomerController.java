@@ -3,17 +3,16 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateCustomerRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.mappers.CustomerMapper;
-import com.gersondeveloper.cadastroavd2024.services.CustomerService;
+import com.gersondeveloper.cadastroavd2024.infra.services.CustomerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping({"/api/customer", "/api/v1/customer"})
 @CrossOrigin(value = "http://localhost:4200")
 public class CustomerController {
     @Autowired
@@ -28,9 +27,9 @@ public class CustomerController {
         if(request != null) {
             var newUser = customerMapper.toUser(request);
             customerService.save(newUser);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.CREATED).body("Cliente criado com sucesso");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requisição inválida");
     }
 
     @SecurityRequirement(name = "bearerAuth")

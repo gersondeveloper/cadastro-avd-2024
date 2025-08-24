@@ -1,7 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.infra.security;
 
-import com.gersondeveloper.cadastroavd2024.interfaces.UserRepository;
-import com.gersondeveloper.cadastroavd2024.services.TokenService;
+import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

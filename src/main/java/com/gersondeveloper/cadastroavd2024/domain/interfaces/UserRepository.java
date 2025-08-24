@@ -1,4 +1,4 @@
-package com.gersondeveloper.cadastroavd2024.interfaces;
+package com.gersondeveloper.cadastroavd2024.domain.interfaces;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CustomerResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
