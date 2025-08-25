@@ -29,4 +29,18 @@ public class ProductController {
         service.createProduct(newProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body("Produto criado com sucesso");
     }
+
+    @SecurityRequirement(name="bearerAuth")
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        var products = service.getAllProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(products);
+    }
+
+    @SecurityRequirement(name="bearerAuth")
+    @GetMapping ("/{id}")
+    public ResponseEntity<?> getById(@RequestParam Long id) {
+        var product = service.getProductById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(product);
+    }
 }
