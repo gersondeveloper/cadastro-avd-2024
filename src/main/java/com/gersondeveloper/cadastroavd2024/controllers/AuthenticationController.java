@@ -7,6 +7,7 @@ import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateRespon
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
+import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class AuthenticationController {
     @Autowired
     TokenService tokenService;
 
+    @Autowired
+    EmailService emailService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -72,6 +76,11 @@ public class AuthenticationController {
         } catch (DataAccessException ex) {
             return getBadRequestUserCreateResponseResponseEntity(ex);
         }
+        // Gera um token de confirmação (reutilizando o JWT atual)
+        String confirmToken = tokenService.generateToken(newUser);
+        // Envia e-mail com o token para confirmação
+        emailService.sendTokenEmail(newUser.getEmail(), confirmToken);
+
         String url = MessageFormat.format("/register/{0}", newUser.getId());
         UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
         return ResponseEntity.created(new URI(url)).body(response);

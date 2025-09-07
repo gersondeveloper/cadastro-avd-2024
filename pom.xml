@@ -14,8 +14,8 @@
     <name>cadastro-avd-2024</name>
     <description>Cadastro AVD 2024</description>
     <properties>
-        <java.version>22</java.version>
-        <maven.compiler.release>22</maven.compiler.release>
+        <java.version>21</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <lombok.version>1.18.38</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <liquibase.version>4.33.0</liquibase.version>
@@ -23,6 +23,7 @@
         <open-api.version>2.8.9</open-api.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <java-jwt.version>4.4.0</java-jwt.version>
+        <spring-dotenv.version>4.0.0</spring-dotenv.version>
     </properties>
     <dependencies>
         <dependency>
@@ -133,20 +134,29 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>${spring-dotenv.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>21</source> <!-- Use your JDK version -->
+                    <source>21</source> &lt;!&ndash; Use your JDK version &ndash;&gt;
                     <target>21</target>
-                    <compilerArgs>--enable-preview</compilerArgs> <!-- Use your JDK version -->
+                    <compilerArgs>21</compilerArgs> &lt;!&ndash; Use your JDK version &ndash;&gt;
                 </configuration>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -164,8 +174,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>17</source> <!-- ou sua versão do Java -->
-                    <target>17</target>
+                    <source>21</source> 
+                    <target>21</target>
                     <annotationProcessorPaths>
                         <!-- Lombok -->
                         <path>
