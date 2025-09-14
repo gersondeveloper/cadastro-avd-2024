@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,7 +29,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void shouldRegisterUserAndReturn201_onUserController() throws Exception {
-        Map<String, Object> payload = new HashMap<>();
+        ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
         payload.put("email", "user.controller@test.com");
         payload.put("name", "Controller User");
         payload.put("password", "Secret123!");
