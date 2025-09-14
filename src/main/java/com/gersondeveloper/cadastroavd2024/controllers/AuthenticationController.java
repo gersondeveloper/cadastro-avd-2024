@@ -34,8 +34,6 @@ import java.text.MessageFormat;
 @CrossOrigin(value = "http://localhost:4200")
 public class AuthenticationController {
 
-
-
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -44,8 +42,6 @@ public class AuthenticationController {
 
     @Autowired
     TokenService tokenService;
-
-
 
     @Autowired
     AuthorizationService authorizationService;
