@@ -15,24 +15,27 @@ import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class AuthenticationControllerIntegrationTests extends AbstractIntegrationTest {
+@org.springframework.test.context.ActiveProfiles("dev")
+public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
-    void shouldRegisterUserAndReturn201() throws Exception {
+    void shouldRegisterUserAndReturn201_onUserController() throws Exception {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("email", "john.doe@test.com");
-        payload.put("name", "John Doe");
+        payload.put("email", "user.controller@test.com");
+        payload.put("name", "Controller User");
         payload.put("password", "Secret123!");
         payload.put("role", UserRole.USER.name());
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/user/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated())
@@ -42,29 +45,30 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
     }
 
     @Test
-    void shouldLoginWithRegisteredUserAndReceiveToken() throws Exception {
-        String email = "jane.doe@test.com";
-        String password = "Sup3rS3cret!";
+    void shouldNotAllowDuplicateEmail_onUserController() throws Exception {
+        String email = "duplicate.user@test.com";
 
-        Map<String, Object> register = new HashMap<>();
-        register.put("email", email);
-        register.put("name", "Jane Doe");
-        register.put("password", password);
-        register.put("role", UserRole.USER.name());
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("email", email);
+        payload.put("name", "First User");
+        payload.put("password", "Sup3rS3cret!");
+        payload.put("role", UserRole.USER.name());
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/user/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(register)))
+                        .content(toJson(payload)))
                 .andExpect(status().isCreated());
 
-        Map<String, Object> login = new HashMap<>();
-        login.put("email", email);
-        login.put("password", password);
+        Map<String, Object> duplicate = new HashMap<>(payload);
+        duplicate.put("name", "Second User");
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/api/user/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(login)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").isNotEmpty());
+                        .content(toJson(duplicate)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.ok").value(false))
+                .andExpect(jsonPath("$.status").value(409));
     }
 }

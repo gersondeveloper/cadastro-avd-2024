@@ -32,23 +32,29 @@ public class User implements UserDetails {
 
     @NotBlank
     private String name;
-
     private String contactName;
-
-    @NotBlank
     private String password;
 
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
-
     private String phone;
-    private boolean isActive = true;
+    private boolean isActive;
+
 
     @PrePersist
     public void prePersist(){
         if (this.id == null) {
             this.creationDate = LocalDateTime.now();
-            this.isActive = true;
+            this.isActive = false;
+
+            // Ensure required DB-not-null fields have defaults when missing
+            if (this.phone == null) {
+                this.phone = "";
+            }
+            // Do not overwrite an explicitly set password; only set a default if missing
+            if (this.password == null || this.password.isBlank()) {
+                this.password = "Senha123";
+            }
         }
     }
 
