@@ -1,5 +1,6 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserFirstLoginRequest;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserLoginRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
@@ -58,34 +59,24 @@ public class AuthenticationController {
         }
 
         var userDetails = (UserDetails) auth.getPrincipal();
+
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 
+    @PutMapping("first-access")
+    public ResponseEntity<?> firstAccess(@RequestBody @Valid UserFirstLoginRequest data) {
 
-
-
-
-    @GetMapping("/confirm")
-    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
-        if (token == null || token.isBlank()) {
-            return ResponseEntity.badRequest().body("Token is required");
-        }
-        String subject = tokenService.validateToken(token);
-        if (subject == null || subject.isBlank()) {
-            return ResponseEntity.badRequest().body("Invalid or expired token");
-        }
-        UserDetails userDetails = userService.findByEmail(subject);
-
-        if (userDetails == null) {
+        var user = (User) userService.findByEmail(data.username());
+        if (user == null) {
             return ResponseEntity.status(404).body("User not found");
         }
-        if (userDetails.isEnabled()) {
-            return ResponseEntity.ok("Account already confirmed");
+        if (user.isActive() && !user.getPassword().equals("change_the_password")) {
+            return ResponseEntity.status(400).body("User already active");
         }
-
-        User user = (User) userDetails;
+        user.setPassword(data.password());
+        user.setActive(true);
         userService.save(user);
-        return ResponseEntity.ok("Account confirmed successfully");
+        return ResponseEntity.ok().build();
     }
 }

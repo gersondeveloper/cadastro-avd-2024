@@ -47,13 +47,11 @@ public class User implements UserDetails {
             this.creationDate = LocalDateTime.now();
             this.isActive = false;
 
-            // Ensure required DB-not-null fields have defaults when missing
             if (this.phone == null) {
                 this.phone = "";
             }
-            // Do not overwrite an explicitly set password; only set a default if missing
             if (this.password == null || this.password.isBlank()) {
-                this.password = "Senha123";
+                this.password = "change_the_password";
             }
         }
     }

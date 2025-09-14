@@ -15,8 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -73,15 +72,88 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
     }
 
     @Test
-    void shouldReturn400WhenConfirmWithoutToken_onAuthenticationController() throws Exception {
-        mockMvc.perform(get("/api/auth/confirm"))
-                .andExpect(status().isBadRequest());
+    void shouldActivateUserAndSetPassword_onFirstAccess() throws Exception {
+        String email = "first.access.user@test.com";
+        String initialPassword = "InitPassw0rd!";
+        String newPassword = "NewStrongPassw0rd!";
+
+        Map<String, Object> register = new HashMap<>();
+        register.put("email", email);
+        register.put("name", "First Access User");
+        register.put("password", initialPassword);
+        register.put("role", UserRole.USER.name());
+
+        mockMvc.perform(post("/api/user/register")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(register)))
+                .andExpect(status().isCreated());
+
+        Map<String, Object> firstAccess = new HashMap<>();
+        firstAccess.put("username", email);
+        firstAccess.put("password", newPassword);
+
+        mockMvc.perform(put("/api/auth/first-access")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(firstAccess)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put("/api/auth/first-access")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(firstAccess)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("User already active")));
     }
 
     @Test
-    void shouldReturn400WhenConfirmWithInvalidToken_onAuthenticationController() throws Exception {
-        mockMvc.perform(get("/api/auth/confirm").param("token", "invalid.token.value"))
+    void shouldReturn400WhenUserAlreadyActive_onFirstAccess() throws Exception {
+        String email = "already.active.user@test.com";
+        String initialPassword = "InitPassw0rd!";
+        String newPassword = "OtherStrongPassw0rd!";
+
+        Map<String, Object> register = new HashMap<>();
+        register.put("email", email);
+        register.put("name", "Already Active User");
+        register.put("password", initialPassword);
+        register.put("role", UserRole.USER.name());
+
+        mockMvc.perform(post("/api/user/register")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(register)))
+                .andExpect(status().isCreated());
+
+        Map<String, Object> firstAccess = new HashMap<>();
+        firstAccess.put("username", email);
+        firstAccess.put("password", newPassword);
+
+        mockMvc.perform(put("/api/auth/first-access")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(firstAccess)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put("/api/auth/first-access")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(firstAccess)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(Matchers.containsString("Invalid or expired token")));
+                .andExpect(content().string(Matchers.containsString("User already active")));
+    }
+
+    @Test
+    void shouldReturn404WhenUserNotFound_onFirstAccess() throws Exception {
+        Map<String, Object> firstAccess = new HashMap<>();
+        firstAccess.put("username", "notfound.user@test.com");
+        firstAccess.put("password", "SomeStrongPass123!");
+
+        mockMvc.perform(put("/api/auth/first-access")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(firstAccess)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(Matchers.containsString("User not found")));
     }
 }

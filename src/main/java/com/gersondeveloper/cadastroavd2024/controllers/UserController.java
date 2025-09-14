@@ -55,9 +55,7 @@ public class UserController {
         } catch (DataAccessException ex) {
             return getBadRequestUserCreateResponseResponseEntity(ex);
         }
-        // Gera um token de confirmação (reutilizando o JWT atual)
         String confirmToken = tokenService.generateToken(newUser);
-        // Envia e-mail com o token para confirmação
         emailService.sendTokenEmail(newUser.getEmail(), confirmToken);
 
         String url = MessageFormat.format("/register/{0}", newUser.getId());
