@@ -1,0 +1,13 @@
+spring:
+  mail:
+    host: disabled
+    port: 0
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+        debug: false
