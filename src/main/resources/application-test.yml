@@ -1,7 +1,7 @@
 spring:
   mail:
     host: disabled
-    port: 0
+    port: 2525
     username:
     password:
     properties:
