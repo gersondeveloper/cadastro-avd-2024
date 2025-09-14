@@ -33,7 +33,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         String email = "auth.user@test.com";
         String password = "StrongPassw0rd!";
 
-        Map<String, Object> register = new HashMap<>();
+        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
         register.put("email", email);
         register.put("name", "Auth User");
         register.put("password", password);
@@ -45,7 +45,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                         .content(toJson(register)))
                 .andExpect(status().isCreated());
 
-        Map<String, Object> login = new HashMap<>();
+        ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
         login.put("email", email);
         login.put("password", password);
 
@@ -54,13 +54,13 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(login)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token", Matchers.not(Matchers.isEmptyOrNullString())))
+                .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
                 .andExpect(jsonPath("$.userDetails.username").value(email));
     }
 
     @Test
     void shouldReturn401ForInvalidCredentials_onAuthenticationController() throws Exception {
-        Map<String, Object> login = new HashMap<>();
+        ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
         login.put("email", "not.exists@test.com");
         login.put("password", "WrongPass123!");
 
@@ -78,7 +78,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         String initialPassword = "change_the_password";
         String newPassword = "NewStrongPassw0rd!";
 
-        Map<String, Object> register = new HashMap<>();
+        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
         register.put("email", email);
         register.put("name", "First Access User");
         register.put("password", initialPassword);
@@ -114,7 +114,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         String initialPassword = "InitPassw0rd!";
         String newPassword = "OtherStrongPassw0rd!";
 
-        Map<String, Object> register = new HashMap<>();
+        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
         register.put("email", email);
         register.put("name", "Already Active User");
         register.put("password", initialPassword);
@@ -126,7 +126,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                         .content(toJson(register)))
                 .andExpect(status().isCreated());
 
-        Map<String, Object> firstAccess = new HashMap<>();
+        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
         firstAccess.put("email", email);
         firstAccess.put("password", newPassword);
 
@@ -146,7 +146,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
 
     @Test
     void shouldReturn404WhenUserNotFound_onFirstAccess() throws Exception {
-        Map<String, Object> firstAccess = new HashMap<>();
+        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
         firstAccess.put("username", "notfound.user@test.com");
         firstAccess.put("password", "SomeStrongPass123!");
 

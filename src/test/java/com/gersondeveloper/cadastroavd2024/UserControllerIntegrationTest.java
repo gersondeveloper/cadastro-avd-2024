@@ -49,7 +49,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     void shouldNotAllowDuplicateEmail_onUserController() throws Exception {
         String email = "duplicate.user@test.com";
 
-        Map<String, Object> payload = new HashMap<>();
+        ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
         payload.put("email", email);
         payload.put("name", "First User");
         payload.put("password", "Sup3rS3cret!");
@@ -61,7 +61,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                         .content(toJson(payload)))
                 .andExpect(status().isCreated());
 
-        Map<String, Object> duplicate = new HashMap<>(payload);
+        ConcurrentHashMap<String, Object> duplicate = new ConcurrentHashMap<>(payload);
         duplicate.put("name", "Second User");
 
         mockMvc.perform(post("/api/user/register")
