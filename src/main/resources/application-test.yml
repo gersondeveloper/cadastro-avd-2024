@@ -1,5 +1,6 @@
 spring:
   mail:
+    test-connection: false
     host: disabled
     port: 2525
     username:
