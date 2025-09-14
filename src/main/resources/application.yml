@@ -47,10 +47,10 @@ mail:
   enabled: true
   host: ${MAIL_HOST:smtp.gmail.com}
   port: ${MAIL_PORT:587}
-  username: ${MAIL_USER}
-  password: ${MAIL_PASSWORD}
+  username: ${SPRING_MAIL_USER}
+  password: ${SPRING_MAIL_PASSWORD}
   protocol: smtp
-  from: ${MAIL_FROM:${MAIL_USER}}
+  from: ${MAIL_FROM:${SPRING_MAIL_USER}}
   properties:
     mail:
       smtp:
