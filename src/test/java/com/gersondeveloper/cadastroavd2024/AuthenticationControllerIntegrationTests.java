@@ -74,7 +74,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
     @Test
     void shouldActivateUserAndSetPassword_onFirstAccess() throws Exception {
         String email = "first.access.user@test.com";
-        String initialPassword = "InitPassw0rd!";
+        String initialPassword = "change_the_password";
         String newPassword = "NewStrongPassw0rd!";
 
         Map<String, Object> register = new HashMap<>();
@@ -90,7 +90,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                 .andExpect(status().isCreated());
 
         Map<String, Object> firstAccess = new HashMap<>();
-        firstAccess.put("username", email);
+        firstAccess.put("email", email);
         firstAccess.put("password", newPassword);
 
         mockMvc.perform(put("/api/auth/first-access")
@@ -126,7 +126,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                 .andExpect(status().isCreated());
 
         Map<String, Object> firstAccess = new HashMap<>();
-        firstAccess.put("username", email);
+        firstAccess.put("email", email);
         firstAccess.put("password", newPassword);
 
         mockMvc.perform(put("/api/auth/first-access")
