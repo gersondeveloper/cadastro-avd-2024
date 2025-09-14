@@ -18,7 +18,7 @@ public class EmailService {
 
     public void sendTokenEmail(String to, String token) {
         if (!mailConfiguration.isEnabled()) {
-            return; // envio desabilitado
+            return;
         }
         try{
         SimpleMailMessage message = new SimpleMailMessage();
@@ -28,8 +28,8 @@ public class EmailService {
             message.setText(
                     "Olá,\n\n" +
                             "Obrigado por se cadastrar. " +
-                            "Para confirmar seu e-mail, clique no link abaixo:\n\n" +
-                            "http://localhost:8080/api/auth/confirm?token=" + token + "\n\n" +
+                            "Para confirmar seu registro, faça login usando o seu email\n\n" +
+                            "e a senha temporária 'change_the_password'\n\n" +
                             "Se não foi você, ignore esta mensagem.\n"
             );
 

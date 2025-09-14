@@ -32,8 +32,11 @@ import java.text.MessageFormat;
 
 @RestController
 @RequestMapping({"/api/auth", "/api/v1/auth"})
-@CrossOrigin(value = "http://localhost:4200")
+@CrossOrigin(value = {"http://localhost:4200","http://localhost:8080"})
 public class AuthenticationController {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -64,17 +67,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 
-    @PutMapping("first-access")
+    @PutMapping("/first-access")
     public ResponseEntity<?> firstAccess(@RequestBody @Valid UserFirstLoginRequest data) {
 
-        var user = (User) userService.findByEmail(data.username());
+        var user = (User) userService.findByEmail(data.email());
         if (user == null) {
             return ResponseEntity.status(404).body("User not found");
         }
         if (user.isActive() && !user.getPassword().equals("change_the_password")) {
             return ResponseEntity.status(400).body("User already active");
         }
-        user.setPassword(data.password());
+        String encodedPassword = passwordEncoder.encode(data.password());
+        user.setPassword(encodedPassword);
         user.setActive(true);
         userService.save(user);
         return ResponseEntity.ok().build();
