@@ -3,7 +3,7 @@ FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-COPY COPY target/cadastro-avd-2024-*.jar app.jar
+COPY target/cadastro-avd-2024-*.jar app.jar
 
 EXPOSE 8080
 
