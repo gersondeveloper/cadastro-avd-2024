@@ -26,8 +26,8 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
-        // HikariCP tuning for tests: increase max lifetime to keep connections valid during long test runs
-        registry.add("spring.datasource.hikari.max-lifetime", () -> "1800000"); // 30 minutes
+        // HikariCP tuning for tests: use a shorter maxLifetime so the pool retires connections before the DB does
+        registry.add("spring.datasource.hikari.maxLifetime", () -> "30000"); // 30 seconds
         // Ensure Liquibase runs against the same container
         registry.add("spring.liquibase.enabled", () -> true);
         registry.add("spring.liquibase.url", postgres::getJdbcUrl);
