@@ -18,15 +18,22 @@ public class EmailService {
 
     public void sendTokenEmail(String to, String token) {
         if (!mailConfiguration.isEnabled()) {
-            return; // envio desabilitado
+            return;
         }
         try{
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mailConfiguration.getFrom());
         message.setTo(to);
         message.setSubject("Confirmação de cadastro");
-        message.setText("Olá,\n\nObrigado por se cadastrar. Utilize o token abaixo para confirmar seu e-mail:\n\n" + token + "\n\nSe não foi você, ignore esta mensagem.\n");
-        mailSender.send(message);
+            message.setText(
+                    "Olá,\n\n" +
+                            "Obrigado por se cadastrar. " +
+                            "Para confirmar seu registro, faça login usando o seu email\n\n" +
+                            "e a senha temporária 'change_the_password'\n\n" +
+                            "Se não foi você, ignore esta mensagem.\n"
+            );
+
+            mailSender.send(message);
         System.out.println("Token enviado para " + to);
         } catch (Exception e) {
             System.err.println("Erro ao enviar e-mail: " + e.getMessage());

@@ -3,6 +3,8 @@ package com.gersondeveloper.cadastroavd2024.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -20,10 +22,10 @@ public class MailConfiguration {
     @Value("${mail.port:25}")
     private int port;
 
-    @Value("${mail.username:}")
+    @Value("${spring.mail.username:}")
     private String username;
 
-    @Value("${mail.password:}")
+    @Value("${spring.mail.password:}")
     private String password;
 
     @Value("${mail.protocol:smtp}")
@@ -85,6 +87,17 @@ public class MailConfiguration {
             System.err.println("[MAIL INFO] You are using port 465 (implicit SSL). Consider setting starttls.enable=false and using 'mail.smtp.ssl.enable=true' if needed, or switch to port 587 for STARTTLS.");
         }
         return mailSender;
+    }
+
+    @Profile("ci")
+    @Bean
+    public JavaMailSender mailSender() {
+        return new JavaMailSenderImpl() {
+            @Override
+            public void send(SimpleMailMessage message) {
+                System.out.println("Sending teste email");
+            }
+        };
     }
 
     public boolean isEnabled() {

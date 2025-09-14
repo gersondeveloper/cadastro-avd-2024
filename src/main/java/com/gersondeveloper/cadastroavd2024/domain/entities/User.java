@@ -32,23 +32,27 @@ public class User implements UserDetails {
 
     @NotBlank
     private String name;
-
     private String contactName;
-
-    @NotBlank
     private String password;
 
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
-
     private String phone;
-    private boolean isActive = true;
+    private boolean isActive;
+
 
     @PrePersist
     public void prePersist(){
         if (this.id == null) {
             this.creationDate = LocalDateTime.now();
-            this.isActive = true;
+            this.isActive = false;
+
+            if (this.phone == null) {
+                this.phone = "";
+            }
+            if (this.password == null || this.password.isBlank()) {
+                this.password = "change_the_password";
+            }
         }
     }
 

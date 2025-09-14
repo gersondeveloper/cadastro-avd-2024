@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.gersondeveloper</groupId>
     <artifactId>cadastro-avd-2024</artifactId>
@@ -14,8 +14,8 @@
     <name>cadastro-avd-2024</name>
     <description>Cadastro AVD 2024</description>
     <properties>
-        <java.version>21</java.version>
-        <maven.compiler.release>21</maven.compiler.release>
+        <java.version>17</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
         <lombok.version>1.18.38</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <liquibase.version>4.33.0</liquibase.version>
@@ -147,16 +147,6 @@
 
     <build>
         <plugins>
-           <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>21</source> &lt;!&ndash; Use your JDK version &ndash;&gt;
-                    <target>21</target>
-                    <compilerArgs>21</compilerArgs> &lt;!&ndash; Use your JDK version &ndash;&gt;
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -174,8 +164,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source> 
-                    <target>21</target>
+                    <source>17</source>
+                    <target>17</target>
                     <annotationProcessorPaths>
                         <!-- Lombok -->
                         <path>

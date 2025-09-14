@@ -1,11 +1,14 @@
 package com.gersondeveloper.cadastroavd2024.infra.security;
 
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,14 +22,18 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private final TokenService tokenService;
-    private final UserRepository userRepository;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthorizationService authorizationService;
+
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    public SecurityFilter(TokenService tokenService, UserRepository userRepository) {
-        this.tokenService = tokenService;
-        this.userRepository = userRepository;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -54,7 +61,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             // 3) Valida token e autentica
             String username = tokenService.validateToken(token); // retorne null/throw se inválido
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails user = userRepository.findByEmail(username);
+                UserDetails user = authorizationService.loadUserByUsername(username);
                 if (user != null) {
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

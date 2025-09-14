@@ -1,13 +1,17 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserFirstLoginRequest;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserLoginRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
-import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
+import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
+import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
+import com.gersondeveloper.cadastroavd2024.mappers.UserMapper;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +32,22 @@ import java.text.MessageFormat;
 
 @RestController
 @RequestMapping({"/api/auth", "/api/v1/auth"})
-@CrossOrigin(value = "http://localhost:4200")
+@CrossOrigin(value = {"http://localhost:4200","http://localhost:8080"})
 public class AuthenticationController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     TokenService tokenService;
 
     @Autowired
-    EmailService emailService;
+    AuthorizationService authorizationService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
@@ -58,42 +61,24 @@ public class AuthenticationController {
         }
 
         var userDetails = (UserDetails) auth.getPrincipal();
+
         var token = tokenService.generateToken((User) auth.getPrincipal());
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
+    @PutMapping("/first-access")
+    public ResponseEntity<?> firstAccess(@RequestBody @Valid UserFirstLoginRequest data) {
 
-        if (this.userRepository.findByEmail(data.email()) != null) {
-            return getUserAlreadyexistsCreateResponseResponseEntity();
+        var user = (User) userService.findByEmail(data.email());
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
         }
-
-        String encryptedPassword = passwordEncoder.encode(data.password());
-        User newUser = User.builder().email(data.email()).name(data.name()).password(encryptedPassword).role(data.role()).build();
-        try {
-            this.userRepository.save(newUser);
-        } catch (DataAccessException ex) {
-            return getBadRequestUserCreateResponseResponseEntity(ex);
+        if (user.isActive() && !user.getPassword().equals("change_the_password")) {
+            return ResponseEntity.status(400).body("User already active");
         }
-        // Gera um token de confirmação (reutilizando o JWT atual)
-        String confirmToken = tokenService.generateToken(newUser);
-        // Envia e-mail com o token para confirmação
-        emailService.sendTokenEmail(newUser.getEmail(), confirmToken);
-
-        String url = MessageFormat.format("/register/{0}", newUser.getId());
-        UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
-        return ResponseEntity.created(new URI(url)).body(response);
+        userService.changePassword(user, data.password());
+        userService.setUserActive(user, true);
+        userService.save(user);
+        return ResponseEntity.ok().build();
     }
-
-    private static @NotNull ResponseEntity<UserCreateResponse> getBadRequestUserCreateResponseResponseEntity(DataAccessException ex) {
-        UserCreateResponse response = new UserCreateResponse(400, ex.getMessage(), false, null);
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    private static @NotNull ResponseEntity<UserCreateResponse> getUserAlreadyexistsCreateResponseResponseEntity() {
-        UserCreateResponse response = new UserCreateResponse(409, "User already created!", false, null);
-        return ResponseEntity.badRequest().body(response);
-    }
-
 }

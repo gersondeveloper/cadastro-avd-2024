@@ -14,7 +14,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
@@ -43,21 +43,20 @@ api:
     token:
       secret: ${JWT_SECRET:my-secret-key}
 
-mail:
-  enabled: true
-  host: ${MAIL_HOST:smtp.gmail.com}
-  port: ${MAIL_PORT:587}
-  username: ${MAIL_USER}
-  password: ${MAIL_PASSWORD}
-  protocol: smtp
-  from: ${MAIL_FROM:${MAIL_USER}}
-  properties:
-    mail:
-      smtp:
-        auth: true
-        starttls:
-          enable: true
-        ssl:
-          trust: smtp.gmail.com
-      debug: ${MAIL_DEBUG:true}
-  default-encoding: UTF-8
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${SPRING_MAIL_USER}
+    password: ${SPRING_MAIL_PASSWORD}
+    protocol: smtp
+    from: ${MAIL_FROM:${SPRING_MAIL_USER}}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+        debug: ${MAIL_DEBUG:true}
+    default-encoding: UTF-8

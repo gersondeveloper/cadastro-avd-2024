@@ -17,6 +17,9 @@ jobs:
   build:
     name: Maven Build & Test (Java 17)
     runs-on: ubuntu-latest
+    env:
+      SPRING_MAIL_USER: ${{ secrets.MAIL_USER }}
+      SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
 
     steps:
       - name: Checkout

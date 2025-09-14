@@ -4,74 +4,30 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="1" author="gerson.filho">
-        <createTable tableName="customers">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creation_date" type="datetime"/>
-            <column name="created_by" type="varchar(255)"/>
-            <column name="modification_date" type="datetime"/>
-            <column name="modified_by" type="varchar(255)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="email" type="varchar(255)"/>
-            <column name="phone" type="varchar(255)"/>
-            <column name="is_active" type="bit">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+    <changeSet id="1" author="gerson">
+        <sql>
+            CREATE TABLE users (
+            id BIGSERIAL PRIMARY KEY,
+            email VARCHAR(150) UNIQUE,
+            name VARCHAR(100) NOT NULL,
+            contact_name VARCHAR(150) NOT NULL,
+            password VARCHAR(255),
+            user_role SMALLINT,
+            phone VARCHAR(50) NOT NULL,
+            is_active BOOLEAN,
+            is_first_access BOOLEAN,
+            creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_by VARCHAR(100),
+            modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            modified_by VARCHAR(100)
+            );
+        </sql>
     </changeSet>
 
-    <changeSet id="2" author="gerson.filho">
-        <addUniqueConstraint tableName="customers"
-                             columnNames="email"
-                             constraintName="uc_customers_email"/>
+    <changeSet id="2" author="gerson">
+        <sql>
+            ALTER TABLE users RENAME COLUMN user_role TO role;
+        </sql>
     </changeSet>
 
-    <changeSet id="3" author="gerson.filho">
-        <addUniqueConstraint tableName="customers"
-                             columnNames="name"
-                             constraintName="uc_customers_name"/>
-    </changeSet>
-
-    <changeSet id="4" author="gerson.filho">
-        <createTable tableName="users">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="email" type="varchar(255)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="password" type="varchar(255)"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="5" author="gerson.filho">
-        <addUniqueConstraint tableName="users"
-                             columnNames="email"
-                             constraintName="uc_users_email"/>
-    </changeSet>
-
-    <changeSet id="6" author="gerson.filho">
-        <createTable tableName="profiles">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="email" type="varchar(255)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="password" type="varchar(255)"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="7" author="gerson.filho">
-        <addUniqueConstraint tableName="profiles"
-                             columnNames="email"
-                             constraintName="uc_profiles_email"/>
-    </changeSet>
-    
-    <changeSet id="8" author="junie">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="customers"/>
-        </preConditions>
-        <dropTable tableName="customers"/>
-    </changeSet>
 </databaseChangeLog>
