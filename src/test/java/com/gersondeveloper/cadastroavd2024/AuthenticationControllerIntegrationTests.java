@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -89,7 +90,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                         .content(toJson(register)))
                 .andExpect(status().isCreated());
 
-        Map<String, Object> firstAccess = new HashMap<>();
+        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
         firstAccess.put("email", email);
         firstAccess.put("password", newPassword);
 
