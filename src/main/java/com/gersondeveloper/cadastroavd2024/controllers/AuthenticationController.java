@@ -35,8 +35,7 @@ import java.text.MessageFormat;
 @CrossOrigin(value = {"http://localhost:4200","http://localhost:8080"})
 public class AuthenticationController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -77,9 +76,8 @@ public class AuthenticationController {
         if (user.isActive() && !user.getPassword().equals("change_the_password")) {
             return ResponseEntity.status(400).body("User already active");
         }
-        String encodedPassword = passwordEncoder.encode(data.password());
-        user.setPassword(encodedPassword);
-        user.setActive(true);
+        userService.changePassword(user, data.password());
+        userService.setUserActive(user, true);
         userService.save(user);
         return ResponseEntity.ok().build();
     }

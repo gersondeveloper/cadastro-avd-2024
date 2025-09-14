@@ -32,31 +32,24 @@ public class UserController {
     @Autowired
     TokenService tokenService;
 
-    @Autowired
-    EmailService emailService;
+
 
     @PostMapping("/register")
     public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
+
+        var newUser = new User();
 
         if (this.userService.findByEmail(data.email()) != null) {
             return getUserAlreadyexistsCreateResponseResponseEntity();
         }
 
-        String encodedPassword = passwordEncoder.encode(data.password());
-        User newUser = User.builder()
-                .email(data.email())
-                .name(data.name())
-                .contactName(data.name())
-                .password(encodedPassword)
-                .role(data.role())
-                .build();
         try {
-            this.userService.save(newUser);
+            newUser = this.userService.registerNewUser(data);
         } catch (DataAccessException ex) {
             return getBadRequestUserCreateResponseResponseEntity(ex);
         }
         String confirmToken = tokenService.generateToken(newUser);
-        emailService.sendTokenEmail(newUser.getEmail(), confirmToken);
+        userService.sendConfirmationEmail(newUser, confirmToken);
 
         String url = MessageFormat.format("/register/{0}", newUser.getId());
         UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
