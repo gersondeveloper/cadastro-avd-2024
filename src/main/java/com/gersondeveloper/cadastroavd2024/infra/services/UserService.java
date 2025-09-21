@@ -6,6 +6,7 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
 import com.gersondeveloper.cadastroavd2024.exceptions.ValidationException;
+import com.gersondeveloper.cadastroavd2024.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,11 +26,18 @@ public class UserService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    UserMapper mapper;
+
     public void save(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
         repository.save(user);
+    }
+
+    public List<UserResponseDto> findAll() {
+        return mapper.toUserResponseDtoList(repository.findAll());
     }
 
     public List<UserResponseDto> findAllByRole(UserRole role) {
@@ -68,7 +76,5 @@ public class UserService {
         return newUser;
     }
 
-    public void sendConfirmationEmail(User user, String confirmToken) {
-        emailService.sendTokenEmail(user.getEmail(), confirmToken);
-    }
+
 }

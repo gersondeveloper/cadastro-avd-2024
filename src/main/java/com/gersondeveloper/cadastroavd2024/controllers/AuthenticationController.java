@@ -35,8 +35,6 @@ import java.text.MessageFormat;
 @CrossOrigin(value = {"http://localhost:4200","http://localhost:8080"})
 public class AuthenticationController {
 
-
-
     @Autowired
     AuthenticationManager authenticationManager;
 

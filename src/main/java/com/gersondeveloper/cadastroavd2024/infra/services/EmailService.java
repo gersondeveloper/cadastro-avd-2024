@@ -1,6 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.infra.services;
 
 import com.gersondeveloper.cadastroavd2024.configuration.MailConfiguration;
+import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -51,5 +52,9 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(body);
         mailSender.send(message);
+    }
+
+    public void sendConfirmationEmail(User user, String confirmToken) {
+        sendTokenEmail(user.getEmail(), confirmToken);
     }
 }

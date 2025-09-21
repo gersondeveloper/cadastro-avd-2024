@@ -3,6 +3,7 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
+import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -32,7 +34,8 @@ public class UserController {
     @Autowired
     TokenService tokenService;
 
-
+    @Autowired
+    EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
@@ -49,11 +52,21 @@ public class UserController {
             return getBadRequestUserCreateResponseResponseEntity(ex);
         }
         String confirmToken = tokenService.generateToken(newUser);
-        userService.sendConfirmationEmail(newUser, confirmToken);
+        emailService.sendConfirmationEmail(newUser, confirmToken);
 
         String url = MessageFormat.format("/register/{0}", newUser.getId());
         UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
         return ResponseEntity.created(new URI(url)).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllUsers(@RequestParam UserRole role) {
+        if(role.equals(UserRole.ADMIN)) {
+            return ResponseEntity.ok(userService.findAll());
+        } else if (role.equals(UserRole.USER)) {
+            return ResponseEntity.ok(userService.findAllByRole(UserRole.CUSTOMER));
+        }
+        return ResponseEntity.ok(List.of());
     }
 
     private static @NotNull ResponseEntity<UserCreateResponse> getBadRequestUserCreateResponseResponseEntity(DataAccessException ex) {
