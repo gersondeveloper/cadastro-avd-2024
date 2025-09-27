@@ -21,13 +21,11 @@ public class TokenService {
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+            return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
                     .withExpiresAt(generateExpirationDay())
                     .sign(algorithm);
-
-            return token;
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error while generating token", exception);
         }
@@ -48,7 +46,7 @@ public class TokenService {
 
     private Instant generateExpirationDay() {
         return LocalDateTime.now()
-                .plusHours(2)
+                .plusHours(24)
                 .toInstant(ZoneOffset.of("-03:00"));
     }
 
