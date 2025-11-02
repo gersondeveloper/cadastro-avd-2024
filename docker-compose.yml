@@ -1,4 +1,9 @@
 services:
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # UI http://localhost:8025
   postgres:
     image: postgres:17
     container_name: postgres_cadastro

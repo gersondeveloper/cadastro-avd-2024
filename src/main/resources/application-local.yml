@@ -7,6 +7,14 @@ spring:
   application:
     name: Cadastro2024
 
+  mail:
+    host: localhost
+    port: 1025
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+      mail.debug: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/cadastro_avd_2025
     username: cadastro
