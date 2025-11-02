@@ -157,4 +157,45 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(Matchers.containsString("User not found")));
     }
+
+    @Test
+    void shouldRegisterThenFirstAccessThenLogin_successfulFlow() throws Exception {
+        String email = "auth.flow.user+" + System.currentTimeMillis() + "@test.com";
+        String initialPassword = "change_the_password";
+        String newPassword = "Sup3rStrongPass!";
+
+        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
+        register.put("email", email);
+        register.put("name", "Auth Flow User");
+        register.put("password", initialPassword);
+        register.put("role", UserRole.USER.name());
+
+        mockMvc.perform(post("/api/user/register")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(register)))
+                .andExpect(status().isCreated());
+
+        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
+        firstAccess.put("email", email);
+        firstAccess.put("password", newPassword);
+
+        mockMvc.perform(put("/api/auth/first-access")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(firstAccess)))
+                .andExpect(status().isOk());
+
+        ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
+        login.put("email", email);
+        login.put("password", newPassword);
+
+        mockMvc.perform(post("/api/auth/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(login)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
+                .andExpect(jsonPath("$.userDetails.username").value(email));
+    }
 }
