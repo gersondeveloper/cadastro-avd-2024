@@ -30,4 +30,21 @@
         </sql>
     </changeSet>
 
+    <changeSet id="3" author="gerson">
+        <sql>
+            CREATE TABLE products (
+            id BIGSERIAL PRIMARY KEY,
+            name VARCHAR(120) NOT NULL,
+            description VARCHAR(240) NOT NULL,
+            uom_base SMALLINT,
+            uom_buy SMALLINT,
+            conversion_base_to_buy DOUBLE PRECISION,
+            creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_by VARCHAR(100),
+            modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            modified_by VARCHAR(100)
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
