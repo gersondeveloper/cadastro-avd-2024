@@ -4,6 +4,7 @@ services:
     ports:
       - "1025:1025"   # SMTP
       - "8025:8025"   # UI http://localhost:8025
+
   postgres:
     image: postgres:17
     container_name: postgres_cadastro
@@ -21,6 +22,34 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cadastro_avd_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Spring profile (uses application-prod.yml)
+      SPRING_PROFILES_ACTIVE: prod
+      # Override datasource to point to the postgres service
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cadastro_avd_2025
+      SPRING_DATASOURCE_USERNAME: cadastro
+      SPRING_DATASOURCE_PASSWORD: "Teste_123#"
+      # JWT
+      JWT_SECRET: change-me-in-prod
+      # Mail via MailHog
+      MAIL_HOST: mailhog
+      MAIL_PORT: "1025"
+      SPRING_MAIL_USER: demo@local.test
+      SPRING_MAIL_PASSWORD: secret
+      MAIL_FROM: demo@local.test
+      MAIL_DEBUG: "true"
+    ports:
+      - "8080:8080"
     restart: unless-stopped
 
 volumes:
