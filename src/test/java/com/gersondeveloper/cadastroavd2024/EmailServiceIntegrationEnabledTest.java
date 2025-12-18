@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@org.springframework.test.context.ActiveProfiles("test")
 @TestPropertySource(properties = {
         "mail.enabled=true",
         "mail.from=test-from@example.com",

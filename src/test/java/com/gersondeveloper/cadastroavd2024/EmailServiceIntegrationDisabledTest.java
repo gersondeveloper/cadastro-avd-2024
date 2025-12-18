@@ -11,6 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@org.springframework.test.context.ActiveProfiles("test")
 @TestPropertySource(properties = {
         "mail.enabled=false",
         "mail.from=test-from@example.com"

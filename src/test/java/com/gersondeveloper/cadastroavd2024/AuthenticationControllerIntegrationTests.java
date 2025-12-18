@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-@org.springframework.test.context.ActiveProfiles("dev")
+@org.springframework.test.context.ActiveProfiles("test")
 public class AuthenticationControllerIntegrationTests extends AbstractIntegrationTest {
 
     @Autowired

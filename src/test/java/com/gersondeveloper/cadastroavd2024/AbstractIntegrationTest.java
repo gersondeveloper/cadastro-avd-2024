@@ -15,17 +15,27 @@ public abstract class AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void overrideProps(DynamicPropertyRegistry registry) {
-        // Use Testcontainers JDBC URL (Testcontainers manages everything)
-        registry.add("spring.datasource.url", () -> "jdbc:tc:postgresql:16-alpine:///testdb");
-        registry.add("spring.datasource.username", () -> "test");
-        registry.add("spring.datasource.password", () -> "test");
-        registry.add("spring.datasource.driver-class-name", () -> "org.testcontainers.jdbc.ContainerDatabaseDriver");
-        // Pooling for test speed and reliability
-        registry.add("spring.datasource.hikari.maximum-pool-size", () -> "2");
-        registry.add("spring.datasource.hikari.minimum-idle", () -> "1");
-        registry.add("spring.datasource.hikari.auto-commit", () -> "true");
-        // Enable Liquibase if needed
-        registry.add("spring.liquibase.enabled", () -> true);
+        // Enable Testcontainers only when profile/property indicates it
+        // Triggers if any of these are set: -Dtc=true, SPRING_PROFILES_ACTIVE contains "tc", or -Dspring.profiles.active contains "tc"
+        boolean tcEnabled = Boolean.getBoolean("tc");
+        String spa = System.getProperty("spring.profiles.active", "");
+        String envSpa = System.getenv("SPRING_PROFILES_ACTIVE");
+        if (spa != null && spa.contains("tc")) tcEnabled = true;
+        if (envSpa != null && envSpa.contains("tc")) tcEnabled = true;
+
+        if (tcEnabled) {
+            // Use Testcontainers JDBC URL (requires Docker)
+            registry.add("spring.datasource.url", () -> "jdbc:tc:postgresql:16-alpine:///testdb");
+            registry.add("spring.datasource.username", () -> "test");
+            registry.add("spring.datasource.password", () -> "test");
+            registry.add("spring.datasource.driver-class-name", () -> "org.testcontainers.jdbc.ContainerDatabaseDriver");
+            // Pooling for test speed and reliability
+            registry.add("spring.datasource.hikari.maximum-pool-size", () -> "2");
+            registry.add("spring.datasource.hikari.minimum-idle", () -> "1");
+            registry.add("spring.datasource.hikari.auto-commit", () -> "true");
+            // Let Liquibase run in TC profile (default false in test profile)
+            registry.add("spring.liquibase.enabled", () -> true);
+        }
     }
 
     String toJson(Object obj) throws Exception {

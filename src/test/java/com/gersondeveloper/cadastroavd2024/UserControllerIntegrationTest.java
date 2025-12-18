@@ -21,7 +21,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-@org.springframework.test.context.ActiveProfiles("dev")
+@org.springframework.test.context.ActiveProfiles("test")
 public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
