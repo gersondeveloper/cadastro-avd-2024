@@ -39,7 +39,7 @@ public class ProductController {
 
     @SecurityRequirement(name="bearerAuth")
     @GetMapping ("/{id}")
-    public ResponseEntity<?> getById(@RequestParam Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         var product = service.getProductById(id);
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
