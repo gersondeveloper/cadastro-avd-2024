@@ -1,12 +1,20 @@
 package com.gersondeveloper.cadastroavd2024;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,13 +28,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
+@Import(ObjectMapperTestConfig.class)
+@AutoConfigureMockMvc
 @org.springframework.test.context.ActiveProfiles("test")
 public class AuthenticationFlowIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void shouldRegisterThenFirstAccessThenLogin() throws Exception {
@@ -72,4 +84,9 @@ public class AuthenticationFlowIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
                 .andExpect(jsonPath("$.userDetails.username").value(email));
     }
+
+    protected String toJson(Object obj) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(obj);
+    }
+
 }

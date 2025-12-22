@@ -1,5 +1,6 @@
 package com.gersondeveloper.cadastroavd2024;
 
+import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
@@ -8,10 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,16 +26,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
+@Import(ObjectMapperTestConfig.class)
+@AutoConfigureMockMvc
 @org.springframework.test.context.ActiveProfiles("test")
 class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    // Mock only the service used by the endpoint to keep the test deterministic
-    @MockBean
+    @MockitoBean
     private UserService userService;
 
     @Test

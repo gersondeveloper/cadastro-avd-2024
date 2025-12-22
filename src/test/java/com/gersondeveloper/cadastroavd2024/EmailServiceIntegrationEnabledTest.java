@@ -7,14 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.*;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @org.springframework.test.context.ActiveProfiles("test")
@@ -29,7 +31,7 @@ public class EmailServiceIntegrationEnabledTest {
     @Autowired
     private EmailService emailService;
 
-    @MockBean
+    @MockitoBean
     private JavaMailSender mailSender;
 
     private ArgumentCaptor<SimpleMailMessage> messageCaptor;
