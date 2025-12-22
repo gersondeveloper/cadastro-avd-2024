@@ -2,33 +2,22 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserFirstLoginRequest;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserLoginRequestDto;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
-import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
-import com.gersondeveloper.cadastroavd2024.mappers.UserMapper;
 import jakarta.validation.Valid;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.MessageFormat;
-
+import java.util.Objects;
 
 @RestController
 @RequestMapping({"/api/auth", "/api/v1/auth"})
@@ -60,7 +49,7 @@ public class AuthenticationController {
 
         var userDetails = (UserDetails) auth.getPrincipal();
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        var token = tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 
