@@ -39,14 +39,14 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     private UserService userService;
 
     @Test
-    @DisplayName("GET /api/user?role=ADMIN returns all users")
+    @DisplayName("GET /api/user/all?role=ADMIN returns all users")
     void getAllUsers_asAdmin_returnsAllUsers() throws Exception {
         var u1 = new UserResponseDto(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
         var u2 = new UserResponseDto(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
         Mockito.when(userService.findAll()).thenReturn(List.of(u1, u2));
 
         mockMvc.perform(
-                        get("/api/user").param("role", UserRole.ADMIN.name())
+                        get("/api/user/all").param("role", UserRole.ADMIN.name())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -54,13 +54,13 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/user?role=USER returns only customers")
+    @DisplayName("GET /api/user/all?role=USER returns only customers")
     void getAllUsers_asUser_returnsCustomers() throws Exception {
         var c1 = new UserResponseDto(3L, "Carol", "carol@test.com", "Carol C.", "555-3333", UserRole.CUSTOMER, LocalDateTime.now(), true);
         Mockito.when(userService.findAllByRole(UserRole.CUSTOMER)).thenReturn(List.of(c1));
 
         mockMvc.perform(
-                        get("/api/user").param("role", UserRole.USER.name())
+                        get("/api/user/all").param("role", UserRole.USER.name())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -68,10 +68,10 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/user?role=CUSTOMER returns empty list")
+    @DisplayName("GET /api/user/all?role=CUSTOMER returns empty list")
     void getAllUsers_asCustomer_returnsEmpty() throws Exception {
         mockMvc.perform(
-                        get("/api/user").param("role", UserRole.CUSTOMER.name())
+                        get("/api/user/all").param("role", UserRole.CUSTOMER.name())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())

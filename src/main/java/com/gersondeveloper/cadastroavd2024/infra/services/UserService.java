@@ -7,6 +7,9 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
 import com.gersondeveloper.cadastroavd2024.exceptions.ValidationException;
 import com.gersondeveloper.cadastroavd2024.mappers.UserMapper;
+import io.micrometer.observation.annotation.Observed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +19,8 @@ import java.util.List;
 
 @Service
 public class UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -29,14 +34,18 @@ public class UserService {
     @Autowired
     UserMapper mapper;
 
+    @Observed(name="user.create")
     public void save(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
+        LOGGER.info("creating user '{}'", user.getName());
         repository.save(user);
     }
 
+    @Observed(name = "user.list-all")
     public List<UserResponseDto> findAll() {
+        LOGGER.info("Listing all users");
         return mapper.toUserResponseDtoList(repository.findAll());
     }
 
@@ -44,7 +53,9 @@ public class UserService {
         return repository.findAllByRole(role);
     }
 
+    @Observed(name="user.find-by-email")
     public UserDetails findByEmail(String email) {
+        LOGGER.info("find {} user", email);
         return repository.findByEmail(email);
     }
 
@@ -60,6 +71,7 @@ public class UserService {
         save(user);
     }
 
+    @Observed(name="user.create")
     public User registerNewUser (UserRegisterRequestDto user) {
         if (findByEmail(user.email()) != null) {
             throw new ValidationException("User already exists");
@@ -73,6 +85,7 @@ public class UserService {
                 .role(user.role())
                 .build();
         save(newUser);
+        LOGGER.info("User {} created witth success!", newUser.getName());
         return newUser;
     }
 

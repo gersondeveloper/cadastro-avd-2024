@@ -2,6 +2,9 @@ package com.gersondeveloper.cadastroavd2024.infra.services;
 
 import com.gersondeveloper.cadastroavd2024.configuration.MailConfiguration;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
+import io.micrometer.observation.annotation.Observed;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,6 +14,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final MailConfiguration mailConfiguration;
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     public EmailService(JavaMailSender mailSender, MailConfiguration mailConfiguration) {
         this.mailSender = mailSender;
@@ -37,8 +41,7 @@ public class EmailService {
             mailSender.send(message);
         System.out.println("Token enviado para " + to);
         } catch (Exception e) {
-            System.err.println("Erro ao enviar e-mail: " + e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Erro ao enviar e-mail {}:", e.getMessage());
         }
     }
 
@@ -54,7 +57,9 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    @Observed(name="email.send-confirmation")
     public void sendConfirmationEmail(User user, String confirmToken) {
+        LOGGER.info("sending eoken email to {}", user.getEmail());
         sendTokenEmail(user.getEmail(), confirmToken);
     }
 }
