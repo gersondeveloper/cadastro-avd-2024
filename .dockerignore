@@ -2,5 +2,5 @@
 node_modules
 .idea
 .vscode
-docker-compose.yml
+compose.yml
 .env

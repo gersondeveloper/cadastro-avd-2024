@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: Cadastro2024
@@ -20,23 +17,50 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  Liquibase:
+  liquibase:
     enabled: true
     change-log: classpath:db.changelog/db.changelog-master.xml
+
+  otlp:
+    metrics:
+      export:
+        url: http://localhost:4318/v1/metrics
+    opentelemetry:
+      tracing:
+        export:
+          otlp:
+            endpoint: http://localhost:4318/v1/traces
+      logging:
+        export:
+          otlp:
+            endpoint: http://localhost:4318/v1/logs
+
+server:
+  port: 8080
+  shutdown: immediate
+
+logging:
+  level:
+    com.gersondeveloper: INFO
+    org.springframework.boot.actuator.autoconfigure.opentelemetry: DEBUG
+    org.springframework.boot.docker.compose: DEBUG
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  tracing:
+    sampling:
+      probability: 1.0
 
-springdoc:
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-  show-actuator: true
-  api-docs:
-    path: /api-docs
+  springdoc:
+    swagger-ui:
+      enabled: true
+      path: /swagger-ui.html
+    show-actuator: true
+    api-docs:
+      path: /api-docs
 
 api:
   security:
@@ -60,3 +84,5 @@ api:
             trust: smtp.gmail.com
         debug: ${MAIL_DEBUG:true}
     default-encoding: UTF-8
+
+

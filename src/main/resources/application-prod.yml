@@ -6,10 +6,14 @@ spring:
     name: Cadastro2024
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/cadastro_avd_2025
-    username: cadastro
-    password: Teste_123#
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cadastro_avd_2025}
+    username: ${SPRING_DATASOURCE_USERNAME:cadastro}
+    password: ${SPRING_DATASOURCE_PASSWORD:Teste_123#}
     driver-class-name: org.postgresql.Driver
+
+  docker:
+    compose:
+      enabled: false
 
   jpa:
     show-sql: true

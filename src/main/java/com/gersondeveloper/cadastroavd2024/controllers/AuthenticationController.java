@@ -8,6 +8,8 @@ import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,6 +38,8 @@ public class AuthenticationController {
     @Autowired
     AuthorizationService authorizationService;
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -50,6 +54,7 @@ public class AuthenticationController {
         var userDetails = (UserDetails) auth.getPrincipal();
 
         var token = tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
+        log.info("Authentication controller was called by login");
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 

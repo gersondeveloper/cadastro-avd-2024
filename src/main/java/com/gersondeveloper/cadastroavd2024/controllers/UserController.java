@@ -7,6 +7,7 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class UserController {
     @Autowired
     EmailService emailService;
 
+    @Observed(name = "user.register")
     @PostMapping("/register")
     public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
 
@@ -59,7 +61,8 @@ public class UserController {
         return ResponseEntity.created(new URI(url)).body(response);
     }
 
-    @GetMapping
+    @Observed(name = "user.getAll")
+    @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(@RequestParam UserRole role) {
         if(role.equals(UserRole.ADMIN)) {
             return ResponseEntity.ok(userService.findAll());
