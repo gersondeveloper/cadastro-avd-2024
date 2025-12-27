@@ -7,6 +7,7 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class AuthenticationController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
+    @Observed(name = "auth.login")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -58,6 +60,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
     }
 
+    @Observed(name = "auth.first-access")
     @PutMapping("/first-access")
     public ResponseEntity<?> firstAccess(@RequestBody @Valid UserFirstLoginRequest data) {
 

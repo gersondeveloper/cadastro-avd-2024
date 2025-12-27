@@ -4,6 +4,7 @@ import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateProductRequ
 import com.gersondeveloper.cadastroavd2024.infra.services.ProductService;
 import com.gersondeveloper.cadastroavd2024.mappers.ProductMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class ProductController {
     @Autowired
     private ProductMapper mapper;
 
+    @Observed(name = "product.create")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequestDto request) {
@@ -30,6 +32,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Produto criado com sucesso");
     }
 
+    @Observed(name = "product.getAll")
     @SecurityRequirement(name="bearerAuth")
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -37,6 +40,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
+    @Observed(name = "product.getById")
     @SecurityRequirement(name="bearerAuth")
     @GetMapping ("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {

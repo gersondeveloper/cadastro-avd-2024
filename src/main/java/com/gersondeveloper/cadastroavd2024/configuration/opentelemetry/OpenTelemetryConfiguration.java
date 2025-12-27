@@ -9,6 +9,8 @@ import io.micrometer.core.instrument.binder.jvm.convention.otel.OpenTelemetryJvm
 import io.micrometer.core.instrument.binder.jvm.convention.otel.OpenTelemetryJvmMemoryMeterConventions;
 import io.micrometer.core.instrument.binder.jvm.convention.otel.OpenTelemetryJvmThreadMeterConventions;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
+import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.observation.aop.ObservedAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.observation.OpenTelemetryServerRequestObservationConvention;
@@ -21,6 +23,11 @@ public class OpenTelemetryConfiguration {
     @Bean
     OpenTelemetryServerRequestObservationConvention openTelemetryServerRequestObservationConvention() {
         return new OpenTelemetryServerRequestObservationConvention();
+    }
+
+    @Bean
+    ObservedAspect observedAspect(ObservationRegistry observationRegistry) {
+        return new ObservedAspect(observationRegistry);
     }
 
     @Bean
