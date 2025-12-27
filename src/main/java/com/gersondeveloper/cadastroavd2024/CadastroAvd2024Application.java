@@ -1,14 +1,11 @@
 package com.gersondeveloper.cadastroavd2024;
 
-import com.gersondeveloper.cadastroavd2024.configuration.opentelemetry.ContextPropagationConfiguration;
-import com.gersondeveloper.cadastroavd2024.configuration.opentelemetry.FilterConfiguration;
-import com.gersondeveloper.cadastroavd2024.configuration.opentelemetry.OpenTelemetryConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-@Import({OpenTelemetryConfiguration.class, ContextPropagationConfiguration.class, FilterConfiguration.class})
+@ConfigurationPropertiesScan
 public class CadastroAvd2024Application {
 
 	public static void main(String[] args) {

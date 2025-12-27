@@ -5,6 +5,7 @@ services:
       - '3000:3000'
       - '4317:4317'
       - '4318:4318'
+
   mailhog:
     image: mailhog/mailhog:v1.0.1
     ports:
@@ -30,33 +31,33 @@ services:
       retries: 10
     restart: unless-stopped
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: cadastro_avd_app
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      # Spring profile (uses application-prod.yml)
-      SPRING_PROFILES_ACTIVE: prod
-      # Override datasource to point to the postgres service
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_cadastro:5432/cadastro_avd_2025
-      SPRING_DATASOURCE_USERNAME: cadastro
-      SPRING_DATASOURCE_PASSWORD: "Teste_123#"
-      # JWT
-      JWT_SECRET: change-me-in-prod
-      # Mail via MailHog
-      MAIL_HOST: mailhog
-      MAIL_PORT: "1025"
-      SPRING_MAIL_USER: demo@local.test
-      SPRING_MAIL_PASSWORD: secret
-      MAIL_FROM: demo@local.test
-      MAIL_DEBUG: "true"
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: cadastro_avd_app
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    environment:
+#      # Spring profile (uses application-prod.yml)
+#      SPRING_PROFILES_ACTIVE: prod
+#      # Override datasource to point to the postgres service
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_cadastro:5432/cadastro_avd_2025
+#      SPRING_DATASOURCE_USERNAME: cadastro
+#      SPRING_DATASOURCE_PASSWORD: "Teste_123#"
+#      # JWT
+#      JWT_SECRET: change-me-in-prod
+#      # Mail via MailHog
+#      MAIL_HOST: mailhog
+#      MAIL_PORT: "1025"
+#      SPRING_MAIL_USER: demo@local.test
+#      SPRING_MAIL_PASSWORD: secret
+#      MAIL_FROM: demo@local.test
+#      MAIL_DEBUG: "true"
+#    ports:
+#      - "8080:8080"
+#    restart: unless-stopped
 
 volumes:
   cadastro_postgres_data:

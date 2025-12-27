@@ -21,20 +21,6 @@ spring:
     enabled: true
     change-log: classpath:db.changelog/db.changelog-master.xml
 
-  otlp:
-    metrics:
-      export:
-        url: http://localhost:4318/v1/metrics
-    opentelemetry:
-      tracing:
-        export:
-          otlp:
-            endpoint: http://localhost:4318/v1/traces
-      logging:
-        export:
-          otlp:
-            endpoint: http://localhost:4318/v1/logs
-
 server:
   port: 8080
   shutdown: immediate
@@ -46,6 +32,15 @@ logging:
     org.springframework.boot.docker.compose: DEBUG
 
 management:
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/traces
+    logging:
+      export:
+        otlp:
+          endpoint: http://localhost:4318/v1/logs
   endpoints:
     web:
       exposure:
