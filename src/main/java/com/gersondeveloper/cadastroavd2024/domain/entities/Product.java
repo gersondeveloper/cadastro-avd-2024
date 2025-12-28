@@ -21,13 +21,27 @@ public class Product extends BaseEntity {
     @Column(name = "description", length = 240, nullable = false)
     private String description;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private UomBase uomBase; // Unit of Measure Base
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private UomBuy uomBuy; // Unit of Measure Base for Buy
 
-    @Column(name = "conversion_base_to_buy", precision = 12)
+    @Column(name = "conversion_base_to_buy", precision = 12) //width of roll
     private Double conversionBaseToBuy; // Conversion factor for UOM
+
+    @Column(name = "current_stock", nullable = false)
+    private Double currentStock = 0.0;
+
+    @Column(name = "min_stock", nullable = false)
+    private Double minStock = 0.0;
+
+    @Column(name = "max_stock")
+    private Double maxStock;
+
+    @Column(name = "stock_alert", nullable = false)
+    private Double stockAlert = 0.0;
+
+
 
 }

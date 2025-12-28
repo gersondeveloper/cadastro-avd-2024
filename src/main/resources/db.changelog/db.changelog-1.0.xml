@@ -47,4 +47,22 @@
         </sql>
     </changeSet>
 
+    <changeSet id="4" author="gerson">
+        <sql>
+            ALTER TABLE products
+            ADD COLUMN current_stock DOUBLE PRECISION NOT NULL DEFAULT 0,
+            ADD COLUMN min_stock DOUBLE PRECISION NOT NULL DEFAULT 0,
+            ADD COLUMN max_stock DOUBLE PRECISION,
+            ADD COLUMN stock_alert DOUBLE PRECISION NOT NULL DEFAULT 0;
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author="gerson">
+        <sql>
+            ALTER TABLE products
+            ALTER COLUMN uom_base TYPE VARCHAR(2),
+            ALTER COLUMN uom_buy TYPE VARCHAR(5);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
