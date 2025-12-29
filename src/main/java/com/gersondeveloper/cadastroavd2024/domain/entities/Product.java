@@ -31,17 +31,14 @@ public class Product extends BaseEntity {
     private Double conversionBaseToBuy; // Conversion factor for UOM
 
     @Column(name = "current_stock", nullable = false)
-    private Double currentStock = 0.0;
+    private int currentStock = 0; //quantity rolls in stock
 
     @Column(name = "min_stock", nullable = false)
-    private Double minStock = 0.0;
+    private int minStock = 1; //min quantity in stock
 
     @Column(name = "max_stock")
-    private Double maxStock;
+    private int maxStock = 5; //max quantity in stock
 
     @Column(name = "stock_alert", nullable = false)
-    private Double stockAlert = 0.0;
-
-
-
+    private int stockAlert = 1; //alert for minimum stock
 }

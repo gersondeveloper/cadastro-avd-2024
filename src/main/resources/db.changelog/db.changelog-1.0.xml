@@ -65,4 +65,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="6" author="gerson">
+        <sql>
+            ALTER TABLE products
+            ADD COLUMN current_stock INTEGER,
+            ADD COLUMN min_stock INTEGER,
+            ADD COLUMN max_stock INTEGER,
+            ADD COLUMN stock_alert INTEGER;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
