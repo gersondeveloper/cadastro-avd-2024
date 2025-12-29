@@ -34,7 +34,7 @@ public class ProductController {
 
     @Observed(name = "product.getAll")
     @SecurityRequirement(name="bearerAuth")
-    @GetMapping(version = "v1")
+    @GetMapping(path = "/all", version = "v1")
     public ResponseEntity<?> getAll() {
         var products = service.getAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(products);
