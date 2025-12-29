@@ -22,7 +22,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping(path = "/api/user")
 @CrossOrigin(value = "http://localhost:4200")
 public class UserController {
 
@@ -39,7 +39,7 @@ public class UserController {
     EmailService emailService;
 
     @Observed(name = "user.register")
-    @PostMapping("/register")
+    @PostMapping(path = "/register", version = "v1")
     public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
 
         var newUser = new User();
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @Observed(name = "user.getAll")
-    @GetMapping("/all")
+    @GetMapping(path = "/all", version = "v1")
     public ResponseEntity<?> getAllUsers(@RequestParam UserRole role) {
         if(role.equals(UserRole.ADMIN)) {
             return ResponseEntity.ok(userService.findAll());

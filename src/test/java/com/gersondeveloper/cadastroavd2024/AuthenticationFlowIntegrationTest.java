@@ -56,6 +56,7 @@ public class AuthenticationFlowIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/user/register")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(register)))
                 .andExpect(status().isCreated());
@@ -67,6 +68,7 @@ public class AuthenticationFlowIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(put("/api/auth/first-access")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
                 .andExpect(status().isOk());
@@ -78,6 +80,7 @@ public class AuthenticationFlowIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(login)))
                 .andExpect(status().isOk())

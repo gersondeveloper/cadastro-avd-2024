@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/product")
 @CrossOrigin(value = "http://localhost:4200")
 public class ProductController {
     @Autowired
@@ -23,7 +23,7 @@ public class ProductController {
 
     @Observed(name = "product.create")
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping
+    @PostMapping(version = "v1")
     public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequestDto request) {
         if(request == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requisição inválida");
 
@@ -34,7 +34,7 @@ public class ProductController {
 
     @Observed(name = "product.getAll")
     @SecurityRequirement(name="bearerAuth")
-    @GetMapping
+    @GetMapping(version = "v1")
     public ResponseEntity<?> getAll() {
         var products = service.getAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(products);
@@ -42,7 +42,7 @@ public class ProductController {
 
     @Observed(name = "product.getById")
     @SecurityRequirement(name="bearerAuth")
-    @GetMapping ("/{id}")
+    @GetMapping (path = "/{id}", version = "v1")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         var product = service.getProductById(id);
         return ResponseEntity.status(HttpStatus.OK).body(product);

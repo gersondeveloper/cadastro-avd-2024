@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,6 +38,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/user/register")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated())
@@ -60,6 +59,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/user/register")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated());
@@ -69,6 +69,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/user/register")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(duplicate)))
                 .andExpect(status().isBadRequest())

@@ -47,6 +47,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(
                         get("/api/user/all").param("role", UserRole.ADMIN.name())
+                                .header("Api-Version", "v1")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -61,6 +62,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(
                         get("/api/user/all").param("role", UserRole.USER.name())
+                                .header("Api-Version", "v1")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -72,6 +74,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     void getAllUsers_asCustomer_returnsEmpty() throws Exception {
         mockMvc.perform(
                         get("/api/user/all").param("role", UserRole.CUSTOMER.name())
+                                .header("Api-Version", "v1")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())

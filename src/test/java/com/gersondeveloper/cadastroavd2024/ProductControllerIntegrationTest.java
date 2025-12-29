@@ -41,8 +41,9 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         payload.put("buyUnitOfMeasurement", UomBuy.ROLL.name());
         payload.put("conversionBaseToBuy", 5.0);
 
-        mockMvc.perform(post("/api/v1/product")
+        mockMvc.perform(post("/api/product")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated())
@@ -59,14 +60,16 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
         payload.put("conversionBaseToBuy", 1.0);
 
-        mockMvc.perform(post("/api/v1/product")
+        mockMvc.perform(post("/api/product")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/v1/product")
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/product")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Api-Version", "v1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
@@ -81,8 +84,9 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
         payload.put("conversionBaseToBuy", 1.0);
 
-        String location = mockMvc.perform(post("/api/v1/product")
+        String location = mockMvc.perform(post("/api/product")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated())
@@ -95,7 +99,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         if (location != null && location.matches(".*/(\\d+)$")) {
             id = Long.parseLong(location.replaceAll(".*\\/(\\d+)$", "$1"));
         } else {
-            var result = mockMvc.perform(get("/api/v1/product")
+            var result = mockMvc.perform(get("/api/product")
+                            .header("Api-Version", "v1")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andReturn();
@@ -107,15 +112,17 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
             id = last.get("id").asLong();
         }
 
-        mockMvc.perform(get("/api/v1/product/" + id)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/product/" + id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Api-Version", "v1"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldReturn400_whenBodyIsMissing_onProductController() throws Exception {
-        mockMvc.perform(post("/api/v1/product")
+        mockMvc.perform(post("/api/product")
                         .with(csrf())
+                        .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

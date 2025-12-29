@@ -39,6 +39,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         register.put("role", UserRole.USER.name());
 
         mockMvc.perform(post("/api/user/register")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(register)))
@@ -49,6 +50,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         login.put("password", password);
 
         mockMvc.perform(post("/api/auth/login")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(login)))
@@ -64,6 +66,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         login.put("password", "WrongPass123!");
 
         mockMvc.perform(post("/api/auth/login")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(login)))
@@ -84,6 +87,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         register.put("role", UserRole.USER.name());
 
         mockMvc.perform(post("/api/user/register")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(register)))
@@ -94,12 +98,14 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         firstAccess.put("password", newPassword);
 
         mockMvc.perform(put("/api/auth/first-access")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(put("/api/auth/first-access")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
@@ -120,6 +126,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         register.put("role", UserRole.USER.name());
 
         mockMvc.perform(post("/api/user/register")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(register)))
@@ -130,12 +137,14 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         firstAccess.put("password", newPassword);
 
         mockMvc.perform(put("/api/auth/first-access")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(put("/api/auth/first-access")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
@@ -150,6 +159,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         firstAccess.put("password", "SomeStrongPass123!");
 
         mockMvc.perform(put("/api/auth/first-access")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
@@ -170,6 +180,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         register.put("role", UserRole.USER.name());
 
         mockMvc.perform(post("/api/user/register")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(register)))
@@ -180,6 +191,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         firstAccess.put("password", newPassword);
 
         mockMvc.perform(put("/api/auth/first-access")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(firstAccess)))
@@ -190,6 +202,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
         login.put("password", newPassword);
 
         mockMvc.perform(post("/api/auth/login")
+                        .header("Api-Version", "v1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(login)))

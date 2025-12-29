@@ -2,6 +2,11 @@ spring:
   application:
     name: Cadastro2024
 
+  mvc:
+    apiversion:
+      use:
+        header: "API-Version"
+
   datasource:
     url: jdbc:postgresql://localhost:5432/cadastro_avd_2025
     username: cadastro
