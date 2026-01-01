@@ -40,6 +40,9 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         payload.put("baseUnitOfMeasurement", UomBase.M2.name());
         payload.put("buyUnitOfMeasurement", UomBuy.ROLL.name());
         payload.put("conversionBaseToBuy", 5.0);
+        payload.put("minStock", 1);
+        payload.put("maxStock", 20);
+        payload.put("stockAlert", 1);
 
         mockMvc.perform(post("/api/product")
                         .with(csrf())
@@ -47,7 +50,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(payload)))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Produto criado com sucesso"));
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/api/product/")));
     }
 
     @Test
@@ -59,6 +63,9 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         payload.put("baseUnitOfMeasurement", UomBase.UN.name());
         payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
         payload.put("conversionBaseToBuy", 1.0);
+        payload.put("minStock", 1);
+        payload.put("maxStock", 20);
+        payload.put("stockAlert", 1);
 
         mockMvc.perform(post("/api/product")
                         .with(csrf())
@@ -67,7 +74,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .content(toJson(payload)))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/product")
+        mockMvc.perform(get("/api/product/all")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Api-Version", "v1"))
                 .andExpect(status().isOk())
@@ -83,6 +90,9 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         payload.put("baseUnitOfMeasurement", UomBase.UN.name());
         payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
         payload.put("conversionBaseToBuy", 1.0);
+        payload.put("minStock", 1);
+        payload.put("maxStock", 20);
+        payload.put("stockAlert", 1);
 
         String location = mockMvc.perform(post("/api/product")
                         .with(csrf())
@@ -95,11 +105,11 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .getHeader("Location");
 
         // If controller does not set Location header, fallback to fetch all and get last id via JSON parsing
-        Long id;
+        long id;
         if (location != null && location.matches(".*/(\\d+)$")) {
-            id = Long.parseLong(location.replaceAll(".*\\/(\\d+)$", "$1"));
+            id = Long.parseLong(location.replaceAll(".*/(\\d+)$", "$1"));
         } else {
-            var result = mockMvc.perform(get("/api/product")
+            var result = mockMvc.perform(get("/api/product/all")
                             .header("Api-Version", "v1")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())

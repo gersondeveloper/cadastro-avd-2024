@@ -13,11 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -25,9 +24,6 @@ import java.util.List;
 @RequestMapping(path = "/api/user")
 @CrossOrigin(value = "http://localhost:4200")
 public class UserController {
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     UserService userService;
@@ -40,7 +36,7 @@ public class UserController {
 
     @Observed(name = "user.register")
     @PostMapping(path = "/register", version = "v1")
-    public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data) throws URISyntaxException {
+    public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data, UriComponentsBuilder  ucb) {
 
         var newUser = new User();
 
@@ -58,7 +54,11 @@ public class UserController {
 
         String url = MessageFormat.format("/register/{0}", newUser.getId());
         UserCreateResponse response = new UserCreateResponse(201, "User created successfully!", true, url);
-        return ResponseEntity.created(new URI(url)).body(response);
+        URI locationOfNewUser = ucb
+                .path("/register/{id}")
+                .buildAndExpand(newUser.getId())
+                .toUri();
+        return ResponseEntity.created(locationOfNewUser).body(response);
     }
 
     @Observed(name = "user.getAll")

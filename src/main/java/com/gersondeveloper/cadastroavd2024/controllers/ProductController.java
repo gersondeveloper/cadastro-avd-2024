@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/product")
@@ -24,12 +27,16 @@ public class ProductController {
     @Observed(name = "product.create")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping(version = "v1")
-    public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequestDto request) {
+    public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequestDto request, UriComponentsBuilder ucb) {
         if(request == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requisição inválida");
 
         var newProduct = mapper.toProduct(request);
         service.createProduct(newProduct);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Produto criado com sucesso");
+        URI locationOfNewProduct = ucb
+                .path("/api/product/{id}")
+                .buildAndExpand(newProduct.getId())
+                .toUri();
+        return ResponseEntity.created(locationOfNewProduct).build();
     }
 
     @Observed(name = "product.getAll")
