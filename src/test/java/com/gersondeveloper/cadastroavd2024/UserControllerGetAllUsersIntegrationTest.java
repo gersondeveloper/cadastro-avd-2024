@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,14 +41,36 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     private UserService userService;
 
     @Test
-    @DisplayName("GET /api/user/all?role=ADMIN returns all users")
-    void getAllUsers_asAdmin_returnsAllUsers() throws Exception {
+    @DisplayName("GET /api/user/all?role=ADMIN&sortBy=name&direction=DESC returns all users sorted by name DESC")
+    void getAllUsers_asAdminWithSortDesc_returnsSortedUsers() throws Exception {
         var u1 = new UserResponseDto(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
         var u2 = new UserResponseDto(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
-        Mockito.when(userService.findAll()).thenReturn(List.of(u1, u2));
+        Mockito.when(userService.findAll(any(PageRequest.class))).thenReturn(List.of(u1, u2));
 
         mockMvc.perform(
-                        get("/api/user/all").param("role", UserRole.ADMIN.name())
+                        get("/api/user/all")
+                                .param("role", UserRole.ADMIN.name())
+                                .param("sortBy", "name")
+                                .param("direction", "DESC")
+                                .header("Api-Version", "v1")
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    @DisplayName("GET /api/user/all?role=ADMIN&sortBy=name&direction=ASC returns all users sorted by name ASC")
+    void getAllUsers_asAdminWithSortAsc_returnsSortedUsers() throws Exception {
+        var u1 = new UserResponseDto(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
+        var u2 = new UserResponseDto(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
+        Mockito.when(userService.findAll(any(PageRequest.class))).thenReturn(List.of(u1, u2));
+
+        mockMvc.perform(
+                        get("/api/user/all")
+                                .param("role", UserRole.ADMIN.name())
+                                .param("sortBy", "name")
+                                .param("direction", "ASC")
                                 .header("Api-Version", "v1")
                                 .accept(MediaType.APPLICATION_JSON)
                 )

@@ -11,6 +11,7 @@ import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,9 +45,9 @@ public class UserService {
     }
 
     @Observed(name = "user.list-all")
-    public List<UserResponseDto> findAll() {
+    public List<UserResponseDto> findAll(PageRequest pageRequest) {
         LOGGER.info("Listing all users");
-        return mapper.toUserResponseDtoList(repository.findAll());
+        return mapper.toUserResponseDtoList(repository.findAll(pageRequest).getContent());
     }
 
     public List<UserResponseDto> findAllByRole(UserRole role) {
