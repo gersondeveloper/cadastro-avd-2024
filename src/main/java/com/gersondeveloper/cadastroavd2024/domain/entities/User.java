@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,10 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends BaseEntity implements UserDetails  {
 
     @NotBlank
     @Column(unique = true)
@@ -38,14 +36,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
     private String phone;
-    private boolean isActive;
-
 
     @PrePersist
     public void prePersist(){
-        if (this.id == null) {
+        if (this.getId() == null) {
             this.creationDate = LocalDateTime.now();
-            this.isActive = false;
 
             if (this.phone == null) {
                 this.phone = "";
@@ -56,13 +51,8 @@ public class User implements UserDetails {
         }
     }
 
-    private LocalDateTime creationDate;
-    private String createdBy;
-    private LocalDateTime modificationDate;
-    private String modifiedBy;
-
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN){
             return List.of(
                     new SimpleGrantedAuthority("ROLE_ADMIN"),
@@ -78,7 +68,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
+    public @NonNull String getUsername() {
         return email;
     }
 
