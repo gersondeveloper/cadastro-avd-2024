@@ -8,8 +8,8 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
-import com.gersondeveloper.cadastroavd2024.mappers.UserMapper;
 import io.micrometer.observation.annotation.Observed;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +34,6 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    UserMapper userMapper;
-
-    @Autowired
     TokenService tokenService;
 
     @Autowired
@@ -46,12 +43,11 @@ public class UserController {
     @PostMapping(path = "/register", version = "v1")
     public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data, UriComponentsBuilder  ucb) {
 
-        var newUser = new User();
-
         if (this.userService.findByEmail(data.email()) != null) {
             return getUserAlreadyexistsCreateResponseResponseEntity();
         }
 
+        User newUser;
         try {
             newUser = this.userService.registerNewUser(data);
         } catch (DataAccessException ex) {
@@ -70,8 +66,9 @@ public class UserController {
     }
 
     @Observed(name = "user.getAll")
+    @SecurityRequirement(name="bearerAuth")
     @GetMapping(path = "/all", version = "v1")
-    public ResponseEntity<List<User>> getAllUsers(@RequestParam UserRole role,
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(@RequestParam UserRole role,
                                                   @RequestParam(defaultValue = "id") String sortBy,
                                                   @RequestParam(defaultValue = "DESC") Sort.Direction direction,
                                                   Pageable pageable) {
@@ -81,9 +78,13 @@ public class UserController {
                             pageable.getPageNumber(),
                             pageable.getPageSize(),
                             pageable.getSortOr(Sort.by(direction, sortBy))));
-            return ResponseEntity.ok(userMapper.toUserList(page));
+            return ResponseEntity.ok(page);
         } else if (role.equals(UserRole.USER)) {
-            return ResponseEntity.ok(userMapper.toUserList(userService.findAllByRole(UserRole.CUSTOMER)));
+            return ResponseEntity.ok(userService.findAllByRole(UserRole.CUSTOMER,
+                    PageRequest.of(
+                            pageable.getPageNumber(),
+                            pageable.getPageSize(),
+                            pageable.getSortOr(Sort.by(direction, sortBy)))));
         }
         return ResponseEntity.ok(List.of());
     }

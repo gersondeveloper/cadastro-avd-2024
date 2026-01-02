@@ -30,9 +30,6 @@ public class UserService {
     private UserRepository repository;
 
     @Autowired
-    EmailService emailService;
-
-    @Autowired
     UserMapper mapper;
 
     @Observed(name="user.create")
@@ -50,8 +47,8 @@ public class UserService {
         return mapper.toUserResponseDtoList(repository.findAll(pageRequest).getContent());
     }
 
-    public List<UserResponseDto> findAllByRole(UserRole role) {
-        return repository.findAllByRole(role);
+    public List<UserResponseDto> findAllByRole(UserRole role, PageRequest pageRequest) {
+        return mapper.toUserResponseDtoList(repository.findAllByRole(role, pageRequest).getContent());
     }
 
     @Observed(name="user.find-by-email")

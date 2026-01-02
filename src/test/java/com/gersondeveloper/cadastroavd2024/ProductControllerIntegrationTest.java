@@ -75,10 +75,56 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isCreated());
 
         mockMvc.perform(get("/api/product/all")
+                        .param("role", "ADMIN")
+                        .param("page", "0")
+                        .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Api-Version", "v1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
+    }
+
+    @Test
+    void shouldGetAllProductsPaginated_andReturn200_onProductController() throws Exception {
+        // Create 2 products to test pagination
+        for (int i = 0; i < 2; i++) {
+            ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
+            payload.put("name", "Produto Paginado " + i);
+            payload.put("description", "Descrição " + i);
+            payload.put("baseUnitOfMeasurement", UomBase.UN.name());
+            payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
+            payload.put("conversionBaseToBuy", 1.0);
+            payload.put("minStock", 1);
+            payload.put("maxStock", 20);
+            payload.put("stockAlert", 1);
+
+            mockMvc.perform(post("/api/product")
+                            .with(csrf())
+                            .header("Api-Version", "v1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(toJson(payload)))
+                    .andExpect(status().isCreated());
+        }
+
+        // Test first page with size 1
+        mockMvc.perform(get("/api/product/all")
+                        .param("role", "ADMIN")
+                        .param("page", "0")
+                        .param("size", "1")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Api-Version", "v1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+
+        // Test second page with size 1
+        mockMvc.perform(get("/api/product/all")
+                        .param("role", "ADMIN")
+                        .param("page", "1")
+                        .param("size", "1")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Api-Version", "v1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -110,6 +156,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
             id = Long.parseLong(location.replaceAll(".*/(\\d+)$", "$1"));
         } else {
             var result = mockMvc.perform(get("/api/product/all")
+                            .param("role", "ADMIN")
                             .header("Api-Version", "v1")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -135,5 +182,25 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Api-Version", "v1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn403_whenRoleIsNotAdmin_onGetAllProducts() throws Exception {
+        mockMvc.perform(get("/api/product/all")
+                        .param("role", "USER")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Api-Version", "v1"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("Only ADMIN users can see list of products."));
+    }
+
+    @Test
+    void shouldReturn403_whenRoleIsCustomer_onGetAllProducts() throws Exception {
+        mockMvc.perform(get("/api/product/all")
+                        .param("role", "CUSTOMER")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Api-Version", "v1"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("Only ADMIN users can see list of products."));
     }
 }

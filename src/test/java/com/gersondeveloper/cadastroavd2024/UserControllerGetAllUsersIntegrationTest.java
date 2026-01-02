@@ -82,7 +82,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/user/all?role=USER returns only customers")
     void getAllUsers_asUser_returnsCustomers() throws Exception {
         var c1 = new UserResponseDto(3L, "Carol", "carol@test.com", "Carol C.", "555-3333", UserRole.CUSTOMER, LocalDateTime.now(), true);
-        Mockito.when(userService.findAllByRole(UserRole.CUSTOMER)).thenReturn(List.of(c1));
+        Mockito.when(userService.findAllByRole(Mockito.eq(UserRole.CUSTOMER), any())).thenReturn(List.of(c1));
 
         mockMvc.perform(
                         get("/api/user/all").param("role", UserRole.USER.name())
