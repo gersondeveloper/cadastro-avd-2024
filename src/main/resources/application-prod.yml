@@ -18,7 +18,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
@@ -27,6 +27,8 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db.changelog/db.changelog-master.xml
+    default-schema: cadastro
+    liquibase-schema: cadastro
 
 management:
   endpoints:

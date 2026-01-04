@@ -72,6 +72,11 @@
             <version>2.21.0-alpha</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+
         <!-- Banco de dados -->
         <dependency>
             <groupId>org.postgresql</groupId>

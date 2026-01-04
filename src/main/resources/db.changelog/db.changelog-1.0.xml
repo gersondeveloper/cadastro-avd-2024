@@ -2,76 +2,46 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="1" author="gerson">
         <sql>
             CREATE TABLE users (
-            id BIGSERIAL PRIMARY KEY,
-            email VARCHAR(150) UNIQUE,
-            name VARCHAR(100) NOT NULL,
-            contact_name VARCHAR(150) NOT NULL,
-            password VARCHAR(255),
-            user_role SMALLINT,
-            phone VARCHAR(50) NOT NULL,
-            is_active BOOLEAN,
-            is_first_access BOOLEAN,
-            creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            created_by VARCHAR(100),
-            modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            modified_by VARCHAR(100)
+                id BIGSERIAL PRIMARY KEY,
+                email VARCHAR(150) UNIQUE,
+                name VARCHAR(100) NOT NULL,
+                contact_name VARCHAR(150) NOT NULL,
+                password VARCHAR(255),
+                role SMALLINT,
+                phone VARCHAR(50) NOT NULL,
+                is_active BOOLEAN DEFAULT FALSE,
+                creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by VARCHAR(100),
+                modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                modified_by VARCHAR(100)
             );
         </sql>
     </changeSet>
 
     <changeSet id="2" author="gerson">
         <sql>
-            ALTER TABLE users RENAME COLUMN user_role TO role;
-        </sql>
-    </changeSet>
-
-    <changeSet id="3" author="gerson">
-        <sql>
             CREATE TABLE products (
-            id BIGSERIAL PRIMARY KEY,
-            name VARCHAR(120) NOT NULL,
-            description VARCHAR(240) NOT NULL,
-            uom_base SMALLINT,
-            uom_buy SMALLINT,
-            conversion_base_to_buy DOUBLE PRECISION,
-            creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            created_by VARCHAR(100),
-            modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            modified_by VARCHAR(100)
+                id BIGSERIAL PRIMARY KEY,
+                name VARCHAR(120) NOT NULL,
+                description VARCHAR(240) NOT NULL,
+                uom_base VARCHAR(2),
+                uom_buy VARCHAR(5),
+                conversion_base_to_buy DOUBLE PRECISION,
+                current_stock INTEGER NOT NULL DEFAULT 0,
+                min_stock INTEGER NOT NULL DEFAULT 0,
+                max_stock INTEGER,
+                stock_alert INTEGER NOT NULL DEFAULT 0,
+                is_active BOOLEAN DEFAULT FALSE,
+                creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by VARCHAR(100),
+                modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                modified_by VARCHAR(100)
             );
-        </sql>
-    </changeSet>
-
-    <changeSet id="4" author="gerson">
-        <sql>
-            ALTER TABLE products
-            ADD COLUMN current_stock DOUBLE PRECISION NOT NULL DEFAULT 0,
-            ADD COLUMN min_stock DOUBLE PRECISION NOT NULL DEFAULT 0,
-            ADD COLUMN max_stock DOUBLE PRECISION,
-            ADD COLUMN stock_alert DOUBLE PRECISION NOT NULL DEFAULT 0;
-        </sql>
-    </changeSet>
-
-    <changeSet id="5" author="gerson">
-        <sql>
-            ALTER TABLE products
-            ALTER COLUMN uom_base TYPE VARCHAR(2),
-            ALTER COLUMN uom_buy TYPE VARCHAR(5);
-        </sql>
-    </changeSet>
-
-    <changeSet id="6" author="gerson">
-        <sql>
-            ALTER TABLE products
-            ADD COLUMN current_stock INTEGER,
-            ADD COLUMN min_stock INTEGER,
-            ADD COLUMN max_stock INTEGER,
-            ADD COLUMN stock_alert INTEGER;
         </sql>
     </changeSet>
 
