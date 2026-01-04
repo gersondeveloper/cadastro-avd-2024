@@ -36,13 +36,10 @@ public class AuthenticationController {
     @Autowired
     TokenService tokenService;
 
-    @Autowired
-    AuthorizationService authorizationService;
-
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Observed(name = "auth.login")
-    @PostMapping("/login")
+    @PostMapping(value = "/login", version = "v1")
     public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
@@ -61,7 +58,7 @@ public class AuthenticationController {
     }
 
     @Observed(name = "auth.first-access")
-    @PutMapping("/first-access")
+    @PutMapping(value = "/first-access", version = "v1")
     public ResponseEntity<?> firstAccess(@RequestBody @Valid UserFirstLoginRequest data) {
 
         var user = (User) userService.findByEmail(data.email());

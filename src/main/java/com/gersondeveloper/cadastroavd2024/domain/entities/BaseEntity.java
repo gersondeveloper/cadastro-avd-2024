@@ -22,5 +22,5 @@ public class BaseEntity {
     protected String createdBy;
     protected LocalDateTime modificationDate;
     protected String modifiedBy;
-    private boolean isActive = false;
+    private boolean isActive;
 }

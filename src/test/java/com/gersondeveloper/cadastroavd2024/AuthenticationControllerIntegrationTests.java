@@ -155,7 +155,7 @@ public class AuthenticationControllerIntegrationTests extends AbstractIntegratio
     @Test
     void shouldReturn404WhenUserNotFound_onFirstAccess() throws Exception {
         ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
-        firstAccess.put("username", "notfound.user@test.com");
+        firstAccess.put("email", "notfound.user@test.com");
         firstAccess.put("password", "SomeStrongPass123!");
 
         mockMvc.perform(put("/api/auth/first-access")

@@ -80,7 +80,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     private boolean isPublic(String uri) {
         // ajuste os padrões conforme sua API pública
         return pathMatcher.match("/api/auth/**", uri) ||
-               pathMatcher.match("/api/user/register", uri);
+               pathMatcher.match("/api/v1/auth/**", uri) ||
+               pathMatcher.match("/api/user/register", uri) ||
+               pathMatcher.match("/api/v1/user/register", uri);
     }
 
     // Exemplo de extractor; use o seu se já existir
