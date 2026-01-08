@@ -24,7 +24,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity (debug = true)
-@Profile("prod")
+@Profile({"prod"})
 public class SecurityConfiguration {
 
     @Autowired
@@ -40,10 +40,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/api-docs", "/api-docs/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/user/register", "/api/v1/user/register").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/auth/first-access", "/api/v1/auth/first-access").permitAll()
-                        .requestMatchers("/api/auth/**", "/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/auth/first-access").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

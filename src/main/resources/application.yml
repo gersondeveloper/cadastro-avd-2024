@@ -21,10 +21,13 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        transaction:
+          jta:
+            platform: org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform
 
   liquibase:
     enabled: true
-    change-log: classpath:/db.changelog/db.changelog-master.xml
+    change-log: classpath:/db/changelog/db.changelog-master.xml
     default-schema: cadastro
     liquibase-schema: cadastro
     drop-first: false
@@ -36,9 +39,10 @@ server:
 logging:
   level:
     com.gersondeveloper: INFO
-    org.springframework.boot.actuator.autoconfigure.opentelemetry: DEBUG
-    org.springframework.boot.docker.compose: DEBUG
-    org.liquibase: DEBUG
+    org.springframework.boot.actuator.autoconfigure.opentelemetry: INFO
+    org.springframework.boot.docker.compose: INFO
+    org.liquibase: INFO
+
 
 management:
   opentelemetry:

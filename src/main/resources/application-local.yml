@@ -1,10 +1,4 @@
-server:
-  port: 8080
-
 spring:
-  application:
-    name: Cadastro2024
-
   mail:
     host: localhost
     port: 1025
@@ -12,43 +6,10 @@ spring:
       mail.smtp.auth: false
       mail.smtp.starttls.enable: false
       mail.debug: true
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/cadastro_avd_2025
-    username: cadastro
-    password: Teste_123#
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  liquibase:
-    enabled: true
-    change-log: classpath:/db.changelog/db.changelog-master.xml
-    default-schema: cadastro
-    liquibase-schema: cadastro
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
-springdoc:
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-  show-actuator: true
-  api-docs:
-    path: /api-docs
-
-api:
-  security:
-    token:
-      secret: ${JWT_SECRET:my-secret-key}
+logging:
+  level:
+    org.springframework.jdbc: DEBUG
+    com.gersondeveloper.cadastroavd2024: DEBUG
+    root: INFO
+    org.springframework.boot.autoconfigure.liquibase: DEBUG
+    org.liquibase: DEBUG

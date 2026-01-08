@@ -2,49 +2,33 @@ server:
   port: 8080
 
 spring:
-  application:
-    name: Cadastro2024
-
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cadastro_avd_2025}
-    username: ${SPRING_DATASOURCE_USERNAME:cadastro}
-    password: ${SPRING_DATASOURCE_PASSWORD:Teste_123#}
-    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
 
   docker:
     compose:
       enabled: false
 
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db.changelog/db.changelog-master.xml
-    default-schema: cadastro
-    liquibase-schema: cadastro
-
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
-
-springdoc:
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-  show-actuator: true
-  api-docs:
-    path: /api-docs
+        include: "health,info,prometheus"
 
 api:
   security:
     token:
-      secret: ${JWT_SECRET:my-secret-key}
+      secret: ${JWT_SECRET}
+
+logging:
+  level:
+    root: INFO
+    com.gersondeveloper: INFO
+    org.liquibase: INFO
