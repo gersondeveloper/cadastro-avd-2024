@@ -1,5 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.configuration;
 
+import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,46 +15,48 @@ import java.util.Properties;
 @Configuration
 public class MailConfiguration {
 
+    @Getter
     @Value("${mail.enabled:true}")
     private boolean enabled;
 
-    @Value("${mail.host:localhost}")
+    @Value("${api.mail.host:localhost}")
     private String host;
 
-    @Value("${mail.port:25}")
+    @Value("${api.mail.port:25}")
     private int port;
 
-    @Value("${spring.mail.username:}")
+    @Value("${api.mail.username:}")
     private String username;
 
-    @Value("${spring.mail.password:}")
+    @Value("${api.mail.password:}")
     private String password;
 
-    @Value("${mail.protocol:smtp}")
+    @Value("${api.mail.protocol:smtp}")
     private String protocol;
 
-    @Value("${mail.from:no-reply@example.com}")
+    @Getter
+    @Value("${api.mail.from:no-reply@example.com}")
     private String from;
 
-    @Value("${mail.properties.mail.smtp.auth:false}")
+    @Value("${api.mail.properties.mail.smtp.auth:false}")
     private boolean smtpAuth;
 
-    @Value("${mail.properties.mail.smtp.starttls.enable:false}")
+    @Value("${api.mail.properties.mail.smtp.starttls.enable:false}")
     private boolean starttls;
 
-    @Value("${mail.properties.mail.debug:false}")
+    @Value("${api.mail.properties.mail.debug:false}")
     private boolean debug;
 
-    @Value("${mail.properties.mail.smtp.ssl.trust:smtp.gmail.com}")
+    @Value("${api.mail.properties.mail.smtp.ssl.trust:smtp.gmail.com}")
     private String sslTrust;
 
-    @Value("${mail.properties.mail.smtp.connectiontimeout:10000}")
+    @Value("${api.mail.properties.mail.smtp.connectiontimeout:10000}")
     private int connectionTimeoutMs;
 
-    @Value("${mail.properties.mail.smtp.timeout:10000}")
+    @Value("${api.mail.properties.mail.smtp.timeout:10000}")
     private int readTimeoutMs;
 
-    @Value("${mail.properties.mail.smtp.writetimeout:10000}")
+    @Value("${api.mail.properties.mail.smtp.writetimeout:10000}")
     private int writeTimeoutMs;
 
     @Bean
@@ -94,17 +98,10 @@ public class MailConfiguration {
     public JavaMailSender mailSender() {
         return new JavaMailSenderImpl() {
             @Override
-            public void send(SimpleMailMessage message) {
+            public void send(@NonNull SimpleMailMessage message) {
                 System.out.println("Sending teste email");
             }
         };
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getFrom() {
-        return from;
-    }
 }
