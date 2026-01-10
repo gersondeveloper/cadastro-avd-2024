@@ -22,9 +22,9 @@ import static org.mockito.Mockito.verify;
 @org.springframework.test.context.ActiveProfiles("test")
 @TestPropertySource(properties = {
         "mail.enabled=true",
-        "mail.from=test-from@example.com",
-        "mail.host=localhost",
-        "mail.port=2525"
+        "MAIL_FROM=test-from@example.com",
+        "api.mail.host=localhost",
+        "api.mail.port=2525"
 })
 public class EmailServiceIntegrationEnabledTest {
 

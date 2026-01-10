@@ -78,10 +78,10 @@ api:
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
-    username: ${SPRING_MAIL_USER}
-    password: ${SPRING_MAIL_PASSWORD}
+    username: ${SPRING_MAIL_USER:test}
+    password: ${SPRING_MAIL_PASSWORD:test}
     protocol: smtp
-    from: ${MAIL_FROM:${SPRING_MAIL_USER}}
+    from: ${MAIL_FROM:no-reply@example.com}
     properties:
       mail:
         smtp:
