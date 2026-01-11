@@ -1,7 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateProductRequestDto;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.ProductResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateProductRequest;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.ProductResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,7 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -29,7 +36,7 @@ public class ProductController {
     @Observed(name = "product.create")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping(version = "v1")
-    public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequestDto request, UriComponentsBuilder ucb) {
+    public ResponseEntity<?> create(@RequestBody @Valid CreateProductRequest request, UriComponentsBuilder ucb) {
         if(request == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Requisição inválida");
 
         var newProduct = productService.createProduct(request);
@@ -50,7 +57,7 @@ public class ProductController {
             Pageable pageable) {
 
         if(role.equals(UserRole.ADMIN)) {
-            List<ProductResponseDto> products = productService.findAll(
+            List<ProductResponse> products = productService.findAll(
                     PageRequest.of(
                             pageable.getPageNumber(),
                             pageable.getPageSize(),

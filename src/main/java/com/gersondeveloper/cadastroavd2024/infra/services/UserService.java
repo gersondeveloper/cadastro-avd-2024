@@ -1,7 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.infra.services;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequest;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
@@ -42,13 +42,13 @@ public class UserService {
     }
 
     @Observed(name = "user.list-all")
-    public List<UserResponseDto> findAll(PageRequest pageRequest) {
+    public List<UserResponse> findAll(PageRequest pageRequest) {
         LOGGER.info("Listing all users");
-        return mapper.toUserResponseDtoList(repository.findAll(pageRequest).getContent());
+        return mapper.toUserResponseList(repository.findAll(pageRequest).getContent());
     }
 
-    public List<UserResponseDto> findAllByRole(UserRole role, PageRequest pageRequest) {
-        return mapper.toUserResponseDtoList(repository.findAllByRole(role, pageRequest).getContent());
+    public List<UserResponse> findAllByRole(UserRole role, PageRequest pageRequest) {
+        return mapper.toUserResponseList(repository.findAllByRole(role, pageRequest).getContent());
     }
 
     @Observed(name="user.find-by-email")
@@ -70,7 +70,7 @@ public class UserService {
     }
 
     @Observed(name="user.create")
-    public User registerNewUser (UserRegisterRequestDto user) {
+    public User registerNewUser (UserRegisterRequest user) {
         if (findByEmail(user.email()) != null) {
             throw new ValidationException("User already exists");
         }

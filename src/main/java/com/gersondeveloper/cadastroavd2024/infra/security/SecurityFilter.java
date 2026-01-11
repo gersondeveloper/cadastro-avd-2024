@@ -1,6 +1,5 @@
 package com.gersondeveloper.cadastroavd2024.infra.security;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
 import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;

@@ -1,8 +1,8 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequestDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequest;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.EmailService;
@@ -41,7 +41,7 @@ public class UserController {
 
     @Observed(name = "user.register")
     @PostMapping(path = "/register", version = "v1")
-    public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequestDto data, UriComponentsBuilder  ucb) {
+    public ResponseEntity<UserCreateResponse> register(@RequestBody @Valid UserRegisterRequest data, UriComponentsBuilder  ucb) {
 
         if (this.userService.findByEmail(data.email()) != null) {
             return getUserAlreadyexistsCreateResponseResponseEntity();
@@ -68,12 +68,12 @@ public class UserController {
     @Observed(name = "user.getAll")
     @SecurityRequirement(name="bearerAuth")
     @GetMapping(path = "/all", version = "v1")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(@RequestParam UserRole role,
-                                                  @RequestParam(defaultValue = "id") String sortBy,
-                                                  @RequestParam(defaultValue = "DESC") Sort.Direction direction,
-                                                  Pageable pageable) {
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam UserRole role,
+                                                          @RequestParam(defaultValue = "id") String sortBy,
+                                                          @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+                                                          Pageable pageable) {
         if(role.equals(UserRole.ADMIN)) {
-            List<UserResponseDto> page = userService.findAll(
+            List<UserResponse> page = userService.findAll(
                     PageRequest.of(
                             pageable.getPageNumber(),
                             pageable.getPageSize(),

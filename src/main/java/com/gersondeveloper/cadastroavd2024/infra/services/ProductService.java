@@ -1,7 +1,7 @@
 package com.gersondeveloper.cadastroavd2024.infra.services;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateProductRequestDto;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.ProductResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CreateProductRequest;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.ProductResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.Product;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.ProductRepository;
 import com.gersondeveloper.cadastroavd2024.exceptions.EntityNotFoundException;
@@ -25,7 +25,7 @@ public class ProductService {
     @Autowired
     private ProductMapper mapper;
 
-    public Product createProduct(CreateProductRequestDto request) {
+    public Product createProduct(CreateProductRequest request) {
         if (request == null) throw new IllegalArgumentException("Request cannot be null");
         var newProduct = mapper.toProduct(request);
         return repository.save(newProduct);
@@ -37,8 +37,8 @@ public class ProductService {
                 .orElseThrow(() -> new EntityNotFoundException(id));
     }
 
-    public List<ProductResponseDto> findAll(PageRequest pageRequest) {
+    public List<ProductResponse> findAll(PageRequest pageRequest) {
         LOGGER.info("Listing all products");
-        return mapper.toProductResponseDtoList(repository.findAll(pageRequest).getContent());
+        return mapper.toProductResponseList(repository.findAll(pageRequest).getContent());
     }
 }

@@ -1,7 +1,7 @@
 package com.gersondeveloper.cadastroavd2024;
 
 import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -43,8 +43,8 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/user/all?role=ADMIN&sortBy=name&direction=DESC returns all users sorted by name DESC")
     void getAllUsers_asAdminWithSortDesc_returnsSortedUsers() throws Exception {
-        var u1 = new UserResponseDto(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
-        var u2 = new UserResponseDto(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
+        var u1 = new UserResponse(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
+        var u2 = new UserResponse(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
         Mockito.when(userService.findAll(any(PageRequest.class))).thenReturn(List.of(u1, u2));
 
         mockMvc.perform(
@@ -62,8 +62,8 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/user/all?role=ADMIN&sortBy=name&direction=ASC returns all users sorted by name ASC")
     void getAllUsers_asAdminWithSortAsc_returnsSortedUsers() throws Exception {
-        var u1 = new UserResponseDto(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
-        var u2 = new UserResponseDto(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
+        var u1 = new UserResponse(1L, "Alice", "alice@test.com", "Alice C.", "555-1111", UserRole.ADMIN, LocalDateTime.now(), true);
+        var u2 = new UserResponse(2L, "Bob", "bob@test.com", "Bob B.", "555-2222", UserRole.USER, LocalDateTime.now(), true);
         Mockito.when(userService.findAll(any(PageRequest.class))).thenReturn(List.of(u1, u2));
 
         mockMvc.perform(
@@ -81,7 +81,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/user/all?role=USER returns only customers")
     void getAllUsers_asUser_returnsCustomers() throws Exception {
-        var c1 = new UserResponseDto(3L, "Carol", "carol@test.com", "Carol C.", "555-3333", UserRole.CUSTOMER, LocalDateTime.now(), true);
+        var c1 = new UserResponse(3L, "Carol", "carol@test.com", "Carol C.", "555-3333", UserRole.CUSTOMER, LocalDateTime.now(), true);
         Mockito.when(userService.findAllByRole(Mockito.eq(UserRole.CUSTOMER), any())).thenReturn(List.of(c1));
 
         mockMvc.perform(

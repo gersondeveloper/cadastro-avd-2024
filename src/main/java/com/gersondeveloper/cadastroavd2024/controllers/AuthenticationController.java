@@ -1,10 +1,9 @@
 package com.gersondeveloper.cadastroavd2024.controllers;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserFirstLoginRequest;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserLoginRequestDto;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponseDto;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserLoginRequest;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserAuthenticationResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
-import com.gersondeveloper.cadastroavd2024.infra.services.AuthorizationService;
 import com.gersondeveloper.cadastroavd2024.infra.services.TokenService;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
 import io.micrometer.observation.annotation.Observed;
@@ -40,7 +39,7 @@ public class AuthenticationController {
 
     @Observed(name = "auth.login")
     @PostMapping(value = "/login", version = "v1")
-    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDto data) {
+    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequest data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
         Authentication auth;
@@ -54,7 +53,7 @@ public class AuthenticationController {
 
         var token = tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
         log.info("Authentication controller was called by login");
-        return ResponseEntity.ok(new UserAuthenticationResponseDto(userDetails, token));
+        return ResponseEntity.ok(new UserAuthenticationResponse(userDetails, token));
     }
 
     @Observed(name = "auth.first-access")
