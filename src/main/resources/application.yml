@@ -6,6 +6,8 @@ spring:
     apiversion:
       use:
         header: "API-Version"
+      default-version: v1
+      required: false
 
   datasource:
     url: jdbc:postgresql://localhost:5432/cadastro_avd_2025
