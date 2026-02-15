@@ -1,23 +1,14 @@
-# Dockerfile (multi-stage build)
+# Use official OpenJDK 17 as base image
+FROM eclipse-temurin:17-jre
 
-# 1) Build stage: build the Spring Boot JAR using official Maven image
-FROM maven:3.9-eclipse-temurin-21 AS builder
-WORKDIR /build
-
-# Copy pom and download dependencies first for better caching
-COPY pom.xml .
-RUN mvn -q -DskipTests dependency:go-offline
-
-# Copy sources and build
-COPY src ./src
-RUN mvn -DskipTests package
-
-# 2) Runtime stage: minimal JRE image to run the app
-FROM eclipse-temurin:21-jre
+# Set the working directory
 WORKDIR /app
 
-# Copy fat jar from the builder stage
-COPY --from=builder /build/target/cadastro-avd-2024-*.jar /app/app.jar
+# Copy the JAR file (assuming it's built and located in target/)
+COPY target/*.jar app.jar
 
+# Expose the port
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+# Run the app
+ENTRYPOINT ["java", "-jar", "app.jar"]
