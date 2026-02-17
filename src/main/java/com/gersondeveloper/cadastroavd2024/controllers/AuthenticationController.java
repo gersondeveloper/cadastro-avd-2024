@@ -64,8 +64,11 @@ public class AuthenticationController {
         if (user == null) {
             return ResponseEntity.status(404).body("User not found");
         }
-        if (user.isActive() && !user.getPassword().equals("change_the_password")) {
-            return ResponseEntity.status(400).body("User already active");
+        if (user.isEnabled()) {
+            assert user.getPassword() != null;
+            if (!user.getPassword().equals("change_the_password")) {
+                return ResponseEntity.status(400).body("User already active");
+            }
         }
         userService.changePassword(user, data.password());
         userService.setUserActive(user, true);

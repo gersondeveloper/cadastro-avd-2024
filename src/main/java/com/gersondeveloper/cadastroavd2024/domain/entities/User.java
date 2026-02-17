@@ -37,6 +37,9 @@ public class User extends BaseEntity implements UserDetails  {
     private UserRole role;
     private String phone;
 
+    @Column(name = "enabled", nullable = false, columnDefinition = "boolean default false")
+    private boolean enabled;
+
     @PrePersist
     public void prePersist(){
         if (this.getId() == null) {
@@ -89,6 +92,6 @@ public class User extends BaseEntity implements UserDetails  {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

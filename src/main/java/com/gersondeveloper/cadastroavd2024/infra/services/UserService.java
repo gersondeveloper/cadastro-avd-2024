@@ -60,12 +60,12 @@ public class UserService {
     public void changePassword(User user, String rawPassword) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
         user.setPassword(encodedPassword);
-        user.setActive(true);  // or other logic
+        user.setEnabled(true);  // or other logic
         save(user);
     }
 
     public void setUserActive(User user, boolean active) {
-        user.setActive(active);
+        user.setEnabled(active);
         save(user);
     }
 

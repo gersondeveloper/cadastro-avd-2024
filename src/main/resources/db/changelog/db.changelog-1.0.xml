@@ -44,5 +44,13 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="3" author="gerson">
+        <addColumn tableName="users">
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="false" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="4" author="gerson">
+        <dropColumn tableName="users" columnName="is_active" />
+    </changeSet>
 
 </databaseChangeLog>
