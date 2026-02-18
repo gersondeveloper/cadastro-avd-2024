@@ -1,5 +1,11 @@
 package com.gersondeveloper.cadastroavd2024.configuration.opentelemetry;
 
+import java.util.List;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.observation.OpenTelemetryServerRequestObservationConvention;
+
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
@@ -11,48 +17,45 @@ import io.micrometer.core.instrument.binder.jvm.convention.otel.OpenTelemetryJvm
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.server.observation.OpenTelemetryServerRequestObservationConvention;
-
-import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
 public class OpenTelemetryConfiguration {
 
-    @Bean
-    OpenTelemetryServerRequestObservationConvention openTelemetryServerRequestObservationConvention() {
-        return new OpenTelemetryServerRequestObservationConvention();
-    }
+  @Bean
+  OpenTelemetryServerRequestObservationConvention
+      openTelemetryServerRequestObservationConvention() {
+    return new OpenTelemetryServerRequestObservationConvention();
+  }
 
-    @Bean
-    ObservedAspect observedAspect(ObservationRegistry observationRegistry) {
-        return new ObservedAspect(observationRegistry);
-    }
+  @Bean
+  ObservedAspect observedAspect(ObservationRegistry observationRegistry) {
+    return new ObservedAspect(observationRegistry);
+  }
 
-    @Bean
-    OpenTelemetryJvmCpuMeterConventions openTelemetryJvmCpuMeterConventions() {
-        return new OpenTelemetryJvmCpuMeterConventions(Tags.empty());
-    }
+  @Bean
+  OpenTelemetryJvmCpuMeterConventions openTelemetryJvmCpuMeterConventions() {
+    return new OpenTelemetryJvmCpuMeterConventions(Tags.empty());
+  }
 
-    @Bean
-    ProcessorMetrics processorMetrics() {
-        return new ProcessorMetrics(List.of(), new OpenTelemetryJvmCpuMeterConventions(Tags.empty()));
-    }
+  @Bean
+  ProcessorMetrics processorMetrics() {
+    return new ProcessorMetrics(List.of(), new OpenTelemetryJvmCpuMeterConventions(Tags.empty()));
+  }
 
-    @Bean
-    JvmMemoryMetrics jvmMemoryMetrics() {
-        return new JvmMemoryMetrics(List.of(), new OpenTelemetryJvmMemoryMeterConventions(Tags.empty()));
-    }
+  @Bean
+  JvmMemoryMetrics jvmMemoryMetrics() {
+    return new JvmMemoryMetrics(
+        List.of(), new OpenTelemetryJvmMemoryMeterConventions(Tags.empty()));
+  }
 
-    @Bean
-    JvmThreadMetrics jvmThreadMetrics() {
-        return new JvmThreadMetrics(List.of(), new OpenTelemetryJvmThreadMeterConventions(Tags.empty()));
-    }
+  @Bean
+  JvmThreadMetrics jvmThreadMetrics() {
+    return new JvmThreadMetrics(
+        List.of(), new OpenTelemetryJvmThreadMeterConventions(Tags.empty()));
+  }
 
-    @Bean
-    ClassLoaderMetrics classLoaderMetrics() {
-        return new ClassLoaderMetrics(new OpenTelemetryJvmClassLoadingMeterConventions());
-    }
-
+  @Bean
+  ClassLoaderMetrics classLoaderMetrics() {
+    return new ClassLoaderMetrics(new OpenTelemetryJvmClassLoadingMeterConventions());
+  }
 }

@@ -1,7 +1,11 @@
 package com.gersondeveloper.cadastroavd2024;
 
-import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
-import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +14,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
+import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 
 @SpringBootTest
 @Import(ObjectMapperTestConfig.class)
@@ -24,190 +24,229 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @org.springframework.test.context.ActiveProfiles("test")
 public class AuthenticationControllerIntegrationTests extends AbstractIntegrationTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Test
-    void shouldAuthenticateWithValidCredentials_onAuthenticationController() throws Exception {
-        String email = "auth.user@test.com";
-        String password = "StrongPassw0rd!";
+  @Test
+  void shouldAuthenticateWithValidCredentials_onAuthenticationController() throws Exception {
+    String email = "auth.user@test.com";
+    String password = "change_the_password";
+    String newPassword = "Sup3rStrongPass!";
 
-        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
-        register.put("email", email);
-        register.put("name", "Auth User");
-        register.put("password", password);
-        register.put("role", UserRole.USER.name());
+    ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
+    register.put("email", email);
+    register.put("name", "Auth User");
+    register.put("password", password);
+    register.put("role", "CUSTOMER");
 
-        mockMvc.perform(post("/api/user/register")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(register)))
-                .andExpect(status().isCreated());
+    mockMvc
+        .perform(
+            post("/api/user/register")
+                .header("API-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(register)))
+        .andExpect(status().isCreated());
 
-        ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
-        login.put("email", email);
-        login.put("password", password);
+    ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
+    firstAccess.put("email", email);
+    firstAccess.put("password", newPassword);
 
-        mockMvc.perform(post("/api/auth/login")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(login)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
-                .andExpect(jsonPath("$.userDetails.username").value(email));
-    }
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .with(csrf())
+                .header("Api-Version", "v1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isOk());
 
-    @Test
-    void shouldReturn401ForInvalidCredentials_onAuthenticationController() throws Exception {
-        ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
-        login.put("email", "not.exists@test.com");
-        login.put("password", "WrongPass123!");
+    ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
+    login.put("email", email);
+    login.put("password", newPassword);
 
-        mockMvc.perform(post("/api/auth/login")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(login)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string(Matchers.containsString("Invalid email or password")));
-    }
+    mockMvc
+        .perform(
+            post("/api/auth/login")
+                .header("API-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(login)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
+        .andExpect(jsonPath("$.userDetails.username").value(email));
+  }
 
-    @Test
-    void shouldActivateUserAndSetPassword_onFirstAccess() throws Exception {
-        String email = "first.access.user@test.com";
-        String initialPassword = "change_the_password";
-        String newPassword = "NewStrongPassw0rd!";
+  @Test
+  void shouldReturn401ForInvalidCredentials_onAuthenticationController() throws Exception {
+    ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
+    login.put("email", "not.exists@test.com");
+    login.put("password", "WrongPass123!");
 
-        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
-        register.put("email", email);
-        register.put("name", "First Access User");
-        register.put("password", initialPassword);
-        register.put("role", UserRole.USER.name());
+    mockMvc
+        .perform(
+            post("/api/auth/login")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(login)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().string(Matchers.containsString("Invalid email or password")));
+  }
 
-        mockMvc.perform(post("/api/user/register")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(register)))
-                .andExpect(status().isCreated());
+  @Test
+  void shouldActivateUserAndSetPassword_onFirstAccess() throws Exception {
+    String email = "first.access.user@test.com";
+    String initialPassword = "change_the_password";
+    String newPassword = "NewStrongPassw0rd!";
 
-        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
-        firstAccess.put("email", email);
-        firstAccess.put("password", newPassword);
+    ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
+    register.put("email", email);
+    register.put("name", "First Access User");
+    register.put("password", initialPassword);
+    register.put("role", UserRole.USER.name());
 
-        mockMvc.perform(put("/api/auth/first-access")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(firstAccess)))
-                .andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/api/user/register")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(register)))
+        .andExpect(status().isCreated());
 
-        mockMvc.perform(put("/api/auth/first-access")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(firstAccess)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(Matchers.containsString("User already active")));
-    }
+    ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
+    firstAccess.put("email", email);
+    firstAccess.put("password", newPassword);
 
-    @Test
-    void shouldReturn400WhenUserAlreadyActive_onFirstAccess() throws Exception {
-        String email = "already.active.user@test.com";
-        String initialPassword = "InitPassw0rd!";
-        String newPassword = "OtherStrongPassw0rd!";
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isOk());
 
-        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
-        register.put("email", email);
-        register.put("name", "Already Active User");
-        register.put("password", initialPassword);
-        register.put("role", UserRole.USER.name());
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(Matchers.containsString("User already active")));
+  }
 
-        mockMvc.perform(post("/api/user/register")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(register)))
-                .andExpect(status().isCreated());
+  @Test
+  void shouldReturn400WhenUserAlreadyActive_onFirstAccess() throws Exception {
+    String email = "already.active.user@test.com";
+    String initialPassword = "InitPassw0rd!";
+    String newPassword = "OtherStrongPassw0rd!";
 
-        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
-        firstAccess.put("email", email);
-        firstAccess.put("password", newPassword);
+    ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
+    register.put("email", email);
+    register.put("name", "Already Active User");
+    register.put("password", initialPassword);
+    register.put("role", UserRole.USER.name());
 
-        mockMvc.perform(put("/api/auth/first-access")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(firstAccess)))
-                .andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/api/user/register")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(register)))
+        .andExpect(status().isCreated());
 
-        mockMvc.perform(put("/api/auth/first-access")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(firstAccess)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(Matchers.containsString("User already active")));
-    }
+    ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
+    firstAccess.put("email", email);
+    firstAccess.put("password", newPassword);
 
-    @Test
-    void shouldReturn404WhenUserNotFound_onFirstAccess() throws Exception {
-        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
-        firstAccess.put("email", "notfound.user@test.com");
-        firstAccess.put("password", "SomeStrongPass123!");
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isOk());
 
-        mockMvc.perform(put("/api/auth/first-access")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(firstAccess)))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string(Matchers.containsString("User not found")));
-    }
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(Matchers.containsString("User already active")));
+  }
 
-    @Test
-    void shouldRegisterThenFirstAccessThenLogin_successfulFlow() throws Exception {
-        String email = "auth.flow.user+" + System.currentTimeMillis() + "@test.com";
-        String initialPassword = "change_the_password";
-        String newPassword = "Sup3rStrongPass!";
+  @Test
+  void shouldReturn404WhenUserNotFound_onFirstAccess() throws Exception {
+    ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
+    firstAccess.put("email", "notfound.user@test.com");
+    firstAccess.put("password", "SomeStrongPass123!");
 
-        ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
-        register.put("email", email);
-        register.put("name", "Auth Flow User");
-        register.put("password", initialPassword);
-        register.put("role", UserRole.USER.name());
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string(Matchers.containsString("User not found")));
+  }
 
-        mockMvc.perform(post("/api/user/register")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(register)))
-                .andExpect(status().isCreated());
+  @Test
+  void shouldRegisterThenFirstAccessThenLogin_successfulFlow() throws Exception {
+    String email = "auth.flow.user+" + System.currentTimeMillis() + "@test.com";
+    String initialPassword = "change_the_password";
+    String newPassword = "Sup3rStrongPass!";
 
-        ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
-        firstAccess.put("email", email);
-        firstAccess.put("password", newPassword);
+    ConcurrentHashMap<String, Object> register = new ConcurrentHashMap<>();
+    register.put("email", email);
+    register.put("name", "Auth Flow User");
+    register.put("password", initialPassword);
+    register.put("role", UserRole.USER.name());
 
-        mockMvc.perform(put("/api/auth/first-access")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(firstAccess)))
-                .andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/api/user/register")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(register)))
+        .andExpect(status().isCreated());
 
-        ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
-        login.put("email", email);
-        login.put("password", newPassword);
+    ConcurrentHashMap<String, Object> firstAccess = new ConcurrentHashMap<>();
+    firstAccess.put("email", email);
+    firstAccess.put("password", newPassword);
 
-        mockMvc.perform(post("/api/auth/login")
-                        .header("Api-Version", "v1")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(login)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
-                .andExpect(jsonPath("$.userDetails.username").value(email));
-    }
+    mockMvc
+        .perform(
+            put("/api/auth/first-access")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(firstAccess)))
+        .andExpect(status().isOk());
+
+    ConcurrentHashMap<String, Object> login = new ConcurrentHashMap<>();
+    login.put("email", email);
+    login.put("password", newPassword);
+
+    mockMvc
+        .perform(
+            post("/api/auth/login")
+                .header("Api-Version", "v1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(login)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token", Matchers.not(Matchers.nullValue())))
+        .andExpect(jsonPath("$.userDetails.username").value(email));
+  }
 }

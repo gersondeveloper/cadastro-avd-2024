@@ -8,8 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan
 public class CadastroAvd2024Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CadastroAvd2024Application.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(CadastroAvd2024Application.class, args);
+  }
 }
