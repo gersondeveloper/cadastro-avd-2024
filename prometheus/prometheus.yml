@@ -1,0 +1,27 @@
+global:
+  scrape_interval:     15s # Intervalo padrão para a coleta de métricas
+  evaluation_interval:  15s # Intervalo padrão para a avaliação de regras
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090'] # Coleta métricas do próprio Prometheus
+
+  - job_name: 'grafana-lgtm' # Configuração para coletar métricas do serviço grafana-lgtm
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets: ['grafana-lgtm:4317'] # Substitua pelo endereço IP ou nome da máquina, se necessário
+
+  - job_name: 'mailhog' # Configuração para coletar métricas do serviço mailhog
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['mailhog:8025'] # Substitua pelo endereço IP ou nome da máquina, se necessário
+
+  - job_name: 'postgres'
+    scrape_interval: 1m
+    static_configs:
+      - targets: ['postgres_cadastro:9104']
+        labels:
+          module: postgres_exporter

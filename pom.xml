@@ -23,6 +23,8 @@
         <open-api.version>2.8.9</open-api.version>
         <spotless.version>2.43.0</spotless.version>
         <google-java-format.version>1.17.0</google-java-format.version>
+        <prometheus.version>1.11.0</prometheus.version>
+        <postgresql.version>42.7.3</postgresql.version>
     </properties>
 
     <dependencies>
@@ -72,6 +74,11 @@
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-logback-appender-1.0</artifactId>
             <version>2.21.0-alpha</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${prometheus.version}</version>
         </dependency>
 
         <!-- Banco de dados -->
@@ -213,6 +220,28 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
 
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.26.0</version>
+                <configuration>
+                    <propertyFile>src/main/resources/application.yml</propertyFile>
+                    <changeLogFile>src/main/resources/db/changelog/db.changelog-master.xml</changeLogFile>
+                    <driver>org.postgresql.Driver</driver>
+                    <url>jdbc:postgresql://localhost:5432/cadastro_avd_2025</url>
+                    <username>cadastro</username>
+                    <password>Teste_123#</password>
+                    <defaultSchemaName>cadastro</defaultSchemaName>
+                    <liquibaseSchemaName>cadastro</liquibaseSchemaName>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

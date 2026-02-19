@@ -22,6 +22,10 @@ public class Product extends BaseEntity {
   @Column(name = "description", length = 240, nullable = false)
   private String description;
 
+  @JoinColumn(name = "category_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  private Category category;
+
   @Enumerated(EnumType.STRING)
   private UomBase uomBase; // Unit of Measure Base
 

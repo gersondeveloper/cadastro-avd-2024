@@ -20,8 +20,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
+import com.gersondeveloper.cadastroavd2024.domain.entities.Category;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBase;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBuy;
+import com.gersondeveloper.cadastroavd2024.domain.interfaces.CategoryRepository;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -31,12 +33,22 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBuy;
 public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired MockMvc mockMvc;
+  @Autowired CategoryRepository categoryRepository;
+
+  private Long createCategory(String name) {
+    Category category = new Category();
+    category.setName(name);
+    category.setDescription("Description for " + name);
+    return categoryRepository.save(category).getId();
+  }
 
   @Test
   void shouldCreateProduct_andReturn201_onProductController() throws Exception {
+    Long categoryId = createCategory("Eletrônicos");
     ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
     payload.put("name", "Papel de Parede Modelo A");
     payload.put("description", "Papel de parede vinílico");
+    payload.put("categoryId", categoryId);
     payload.put("baseUnitOfMeasurement", UomBase.M2.name());
     payload.put("buyUnitOfMeasurement", UomBuy.ROLL.name());
     payload.put("conversionBaseToBuy", 5.0);
@@ -59,10 +71,12 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldGetAllProducts_andReturn200_onProductController() throws Exception {
+    Long categoryId = createCategory("Papelaria");
     // Ensure at least one product exists
     ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
     payload.put("name", "Produto de Teste B");
     payload.put("description", "Descrição do Produto de Teste B");
+    payload.put("categoryId", categoryId);
     payload.put("baseUnitOfMeasurement", UomBase.UN.name());
     payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
     payload.put("conversionBaseToBuy", 1.0);
@@ -93,11 +107,13 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldGetAllProductsPaginated_andReturn200_onProductController() throws Exception {
+    Long categoryId = createCategory("Móveis");
     // Create 2 products to test pagination
     for (int i = 0; i < 2; i++) {
       ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
       payload.put("name", "Produto Paginado " + i);
       payload.put("description", "Descrição " + i);
+      payload.put("categoryId", categoryId);
       payload.put("baseUnitOfMeasurement", UomBase.UN.name());
       payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
       payload.put("conversionBaseToBuy", 1.0);
@@ -142,10 +158,12 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldGetProductById_andReturn200_onProductController() throws Exception {
+    Long categoryId = createCategory("Ferramentas");
     // Create a product first
     ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
     payload.put("name", "Produto para Buscar");
     payload.put("description", "Descrição do Produto para Buscar");
+    payload.put("categoryId", categoryId);
     payload.put("baseUnitOfMeasurement", UomBase.UN.name());
     payload.put("buyUnitOfMeasurement", UomBuy.UN.name());
     payload.put("conversionBaseToBuy", 1.0);

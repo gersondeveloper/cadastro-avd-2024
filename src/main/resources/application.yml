@@ -47,6 +47,11 @@ logging:
 
 
 management:
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
   opentelemetry:
     tracing:
       export:
@@ -59,10 +64,13 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: ["health", "info", "metrics", "prometheus", "loggers", "httptrace", "threaddump"]
   tracing:
     sampling:
       probability: 1.0
+  metrics:
+    tags:
+        application: ${spring.application.name:cadastro_avd_2025}
 
   springdoc:
     swagger-ui:
@@ -94,5 +102,7 @@ api:
             trust: smtp.gmail.com
         debug: ${MAIL_DEBUG:true}
     default-encoding: UTF-8
-
+liquibase:
+  change-log: src/main/resources/db/changelog/db.changelog-master.xml
+  default-schema: public
 

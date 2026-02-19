@@ -6,6 +6,7 @@ import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBuy;
 public record CreateProductRequest(
     String name,
     String description,
+    Long categoryId,
     UomBase baseUnitOfMeasurement,
     UomBuy buyUnitOfMeasurement,
     Double conversionBaseToBuy,
