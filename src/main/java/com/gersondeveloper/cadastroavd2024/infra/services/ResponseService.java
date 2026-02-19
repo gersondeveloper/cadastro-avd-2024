@@ -3,7 +3,7 @@ package com.gersondeveloper.cadastroavd2024.infra.services;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserCreateResponse;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CreateResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class ResponseService {
 
   private DataAccessException ex;
-  private UserCreateResponse response;
+  private CreateResponse response;
 
-  public ResponseService(DataAccessException ex, UserCreateResponse response) {}
+  public ResponseService(DataAccessException ex, CreateResponse response) {}
 }

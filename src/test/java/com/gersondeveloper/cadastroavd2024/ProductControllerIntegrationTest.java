@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,7 +30,7 @@ import com.gersondeveloper.cadastroavd2024.domain.interfaces.CategoryRepository;
 @ExtendWith(SpringExtension.class)
 @Import(ObjectMapperTestConfig.class)
 @AutoConfigureMockMvc
-@org.springframework.test.context.ActiveProfiles({"test", "tc"})
+@ActiveProfiles({"test", "tc"})
 public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired MockMvc mockMvc;

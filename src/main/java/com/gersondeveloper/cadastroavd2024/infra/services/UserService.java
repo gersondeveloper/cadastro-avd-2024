@@ -2,9 +2,6 @@ package com.gersondeveloper.cadastroavd2024.infra.services;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,30 +16,35 @@ import com.gersondeveloper.cadastroavd2024.exceptions.ValidationException;
 import com.gersondeveloper.cadastroavd2024.mappers.UserMapper;
 
 import io.micrometer.observation.annotation.Observed;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class UserService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+  private final PasswordEncoder passwordEncoder;
+  private final UserRepository repository;
+  private final UserMapper mapper;
 
-  @Autowired private PasswordEncoder passwordEncoder;
-
-  @Autowired private UserRepository repository;
-
-  @Autowired UserMapper mapper;
+  public UserService(
+      PasswordEncoder passwordEncoder, UserRepository userRepository, UserMapper mapper) {
+    this.passwordEncoder = passwordEncoder;
+    this.repository = userRepository;
+    this.mapper = mapper;
+  }
 
   @Observed(name = "user.create")
   public void save(User user) {
     if (user == null) {
       throw new IllegalArgumentException("User cannot be null");
     }
-    LOGGER.info("creating user '{}'", user.getName());
+    log.info("creating user '{}'", user.getName());
     repository.save(user);
   }
 
   @Observed(name = "user.list-all")
   public List<UserResponse> findAll(PageRequest pageRequest) {
-    LOGGER.info("Listing all users");
+    log.info("Listing all users");
     return mapper.toUserResponseList(repository.findAll(pageRequest).getContent());
   }
 
@@ -52,7 +54,7 @@ public class UserService {
 
   @Observed(name = "user.find-by-email")
   public UserDetails findByEmail(String email) {
-    LOGGER.info("find {} user", email);
+    log.info("find {} user", email);
     return repository.findByEmail(email);
   }
 
@@ -83,7 +85,7 @@ public class UserService {
             .role(user.role())
             .build();
     save(newUser);
-    LOGGER.info("User {} created witth success!", newUser.getName());
+    log.info("User {} created witth success!", newUser.getName());
     return newUser;
   }
 }

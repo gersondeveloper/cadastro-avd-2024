@@ -2,8 +2,6 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +20,9 @@ import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
 
 import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping({"/api/auth"})
 @CrossOrigin(value = {"http://localhost:4200", "http://localhost:8080"})
@@ -34,8 +34,6 @@ public class AuthenticationController {
 
   @Autowired TokenService tokenService;
 
-  private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
-
   @Observed(name = "auth.login")
   @PostMapping(value = "/login", version = "v1")
   public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequest data) {
@@ -45,13 +43,14 @@ public class AuthenticationController {
     try {
       auth = authenticationManager.authenticate(usernamePassword);
     } catch (AuthenticationException e) {
+      log.error("Authentication failed for user '{}': {}", data.email(), e.getMessage());
       return ResponseEntity.status(401).body("Invalid email or password");
     }
 
     var userDetails = (UserDetails) auth.getPrincipal();
 
     var token = tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
-    log.info("Authentication controller was called by login");
+    log.info("Authentication controller was called by login {}", data.email());
     return ResponseEntity.ok(new UserAuthenticationResponse(userDetails, token));
   }
 
@@ -61,17 +60,20 @@ public class AuthenticationController {
 
     var user = (User) userService.findByEmail(data.email());
     if (user == null) {
+      log.error("error during first access for user '{}': user not found", data.email());
       return ResponseEntity.status(404).body("User not found");
     }
     if (user.isEnabled()) {
       assert user.getPassword() != null;
       if (!user.getPassword().equals("change_the_password")) {
+        log.error("error during first access for user '{}': user already active", data.email());
         return ResponseEntity.status(400).body("User already active");
       }
     }
     userService.changePassword(user, data.password());
     userService.setUserActive(user, true);
     userService.save(user);
+    log.info("First access completed for user '{}'", data.email());
     return ResponseEntity.ok().build();
   }
 }
