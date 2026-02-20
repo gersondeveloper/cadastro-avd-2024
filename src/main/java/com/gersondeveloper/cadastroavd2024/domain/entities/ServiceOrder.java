@@ -10,7 +10,7 @@ import lombok.*;
 /**
  * Entity mapped to table "service_order" according to the provided DDL.
  *
- * <p>create table service_order ( id bigserial primary key, code varchar(20) unique, create_date
+ * <p>register table service_order ( id bigserial primary key, code varchar(20) unique, create_date
  * date not null, deadline date, upfront_payment_value numeric(12,2), balance numeric(12,2), contact
  * varchar(120), installation_date date, installation_time time, installation_location varchar(255),
  * observation text, service_description text, status varchar(20) not null default 'DRAFT', user_id

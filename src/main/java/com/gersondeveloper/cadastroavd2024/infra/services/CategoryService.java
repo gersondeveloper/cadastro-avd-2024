@@ -18,7 +18,7 @@ public class CategoryService {
     this.categoryRepository = categoryRepository;
   }
 
-  @Observed(name = "category.create")
+  @Observed(name = "category.register")
   public Category createCategory(Category category) {
     categoryRepository.save(category);
     log.info("Creating category '{}'", category.getName());

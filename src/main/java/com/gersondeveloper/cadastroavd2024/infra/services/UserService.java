@@ -32,7 +32,7 @@ public class UserService {
     this.mapper = mapper;
   }
 
-  @Observed(name = "user.create")
+  @Observed(name = "user.register")
   public void save(User user) {
     if (user == null) {
       throw new IllegalArgumentException("User cannot be null");
@@ -69,7 +69,7 @@ public class UserService {
     save(user);
   }
 
-  @Observed(name = "user.create")
+  @Observed(name = "user.register")
   public User registerNewUser(User user) {
     if (findByEmail(user.getEmail()) != null) {
       throw new ValidationException("User already exists");

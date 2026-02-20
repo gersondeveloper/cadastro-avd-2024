@@ -17,6 +17,6 @@ public class Category extends BaseEntity {
   private String name;
   private String description;
 
-  @Column(name="is_active")
+  @Column(name = "is_active")
   private boolean active;
 }

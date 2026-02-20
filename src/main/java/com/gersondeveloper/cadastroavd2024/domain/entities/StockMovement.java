@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 /**
  * Entity mapped to table "stock_movement" according to the provided DDL.
  *
- * <p>create table stock_movement ( id bigserial primary key, movement_date timestamp not null
+ * <p>register table stock_movement ( id bigserial primary key, movement_date timestamp not null
  * default now(), movement_type varchar(30) not null, // sera um enum do tipo MovementType
  * product_id bigint not null references product(id), product_variant_id bigint references
  * product_variant(id), batch_id bigint references batch(id), service_order_item_id bigint,

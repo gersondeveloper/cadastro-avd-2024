@@ -36,7 +36,7 @@ public class CategoryController {
     this.mapper = categoryMapper;
   }
 
-  @Observed(name = "product.category.create")
+  @Observed(name = "product.category.register")
   @SecurityRequirement(name = "bearerAuth")
   @PostMapping(path = "/register", version = "v1")
   public ResponseEntity<CreateResponse<CategoryCreateResponse>> register(
@@ -59,7 +59,7 @@ public class CategoryController {
     } catch (Exception ex) {
       var errorResponse =
           new CreateResponse<CategoryCreateResponse>(
-              400, "Failed to create category", false, null, null);
+              400, "Failed to register category", false, null, null);
       return ResponseEntity.badRequest().body(errorResponse);
     }
   }

@@ -22,7 +22,7 @@
         <annotations.version>24.0.1</annotations.version>
         <open-api.version>2.8.9</open-api.version>
         <spotless.version>2.43.0</spotless.version>
-        <google-java-format.version>1.17.0</google-java-format.version>
+        <google-java-format.version>1.34.1</google-java-format.version>
         <prometheus.version>1.11.0</prometheus.version>
         <postgresql.version>42.7.3</postgresql.version>
     </properties>
@@ -233,7 +233,6 @@
                     <username>cadastro</username>
                     <password>Teste_123#</password>
                     <defaultSchemaName>cadastro</defaultSchemaName>
-                    <liquibaseSchemaName>cadastro</liquibaseSchemaName>
                 </configuration>
                 <dependencies>
                     <dependency>

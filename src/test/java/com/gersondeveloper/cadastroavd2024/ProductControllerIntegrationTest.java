@@ -36,7 +36,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
   @Autowired MockMvc mockMvc;
   @Autowired CategoryRepository categoryRepository;
 
-  private Long createCategory(String name) {
+  private Long registerCategory(String name) {
     Category category = new Category();
     category.setName(name);
     category.setDescription("Description for " + name);
@@ -44,8 +44,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void shouldCreateProduct_andReturn201_onProductController() throws Exception {
-    Long categoryId = createCategory("Eletrônicos");
+  void shouldRegisterProduct_andReturn201_onProductController() throws Exception {
+    Long categoryId = registerCategory("Eletrônicos");
     ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
     payload.put("name", "Papel de Parede Modelo A");
     payload.put("description", "Papel de parede vinílico");
@@ -72,7 +72,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldGetAllProducts_andReturn200_onProductController() throws Exception {
-    Long categoryId = createCategory("Papelaria");
+    Long categoryId = registerCategory("Papelaria");
     // Ensure at least one product exists
     ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
     payload.put("name", "Produto de Teste B");
@@ -108,7 +108,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldGetAllProductsPaginated_andReturn200_onProductController() throws Exception {
-    Long categoryId = createCategory("Móveis");
+    Long categoryId = registerCategory("Móveis");
     // Create 2 products to test pagination
     for (int i = 0; i < 2; i++) {
       ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
@@ -159,7 +159,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldGetProductById_andReturn200_onProductController() throws Exception {
-    Long categoryId = createCategory("Ferramentas");
+    Long categoryId = registerCategory("Ferramentas");
     // Create a product first
     ConcurrentHashMap<String, Object> payload = new ConcurrentHashMap<>();
     payload.put("name", "Produto para Buscar");

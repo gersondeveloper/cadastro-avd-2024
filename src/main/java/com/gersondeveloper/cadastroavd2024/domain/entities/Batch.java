@@ -9,7 +9,7 @@ import lombok.*;
 /**
  * Entity mapped to table "batch" according to the provided DDL.
  *
- * <p>create table batch ( id bigserial primary key, product_variant_id bigint not null references
+ * <p>register table batch ( id bigserial primary key, product_variant_id bigint not null references
  * product(id), variante_id bigint references product_variant(id), batch_code varchar(60),
  * valid_until date, local_id bigint not null, uom_base_balance numeric(14,4) not null default 0 );
  */

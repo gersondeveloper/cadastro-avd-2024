@@ -10,7 +10,7 @@ import lombok.*;
 /**
  * Entity mapped to table "service_order_item" according to the provided DDL.
  *
- * <p>create table service_order_item ( id bigserial primary key, service_order_id bigint not null
+ * <p>register table service_order_item ( id bigserial primary key, service_order_id bigint not null
  * references service_order(id), product_id bigint not null references product(id),
  * product_variant_id bigint references product_variante(id), uom_base varchar(5) not null, -- tipo
  * UomBase enum width_mm int, height_mm int, quantity numeric(12,3) not null, finishing
