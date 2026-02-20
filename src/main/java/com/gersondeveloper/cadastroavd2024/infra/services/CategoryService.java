@@ -2,7 +2,6 @@ package com.gersondeveloper.cadastroavd2024.infra.services;
 
 import org.springframework.stereotype.Service;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CategoryRegisterRequest;
 import com.gersondeveloper.cadastroavd2024.domain.entities.Category;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.CategoryRepository;
 
@@ -20,13 +19,9 @@ public class CategoryService {
   }
 
   @Observed(name = "category.create")
-  public Category createCategory(CategoryRegisterRequest request) {
-    var category = new Category();
-    category.setName(request.name());
-    category.setDescription(request.description());
-    category.setActive(request.active());
-    log.info("Creating category '{}'", request.name());
+  public Category createCategory(Category category) {
     categoryRepository.save(category);
+    log.info("Creating category '{}'", category.getName());
     return category;
   }
 }

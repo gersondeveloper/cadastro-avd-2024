@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.CategoryRegisterRequest;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CategoryCreateResponse;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CreateResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.Category;
 import com.gersondeveloper.cadastroavd2024.infra.services.CategoryService;
+import com.gersondeveloper.cadastroavd2024.mappers.CategoryMapper;
 
 import io.micrometer.observation.annotation.Observed;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,29 +29,38 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin(value = "http://localhost:4200")
 public class CategoryController {
   private final CategoryService categoryService;
+  private final CategoryMapper mapper;
 
-  public CategoryController(CategoryService categoryService) {
+  public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {
     this.categoryService = categoryService;
+    this.mapper = categoryMapper;
   }
 
   @Observed(name = "product.category.create")
   @SecurityRequirement(name = "bearerAuth")
   @PostMapping(path = "/register", version = "v1")
-  public ResponseEntity<?> register(
-      @RequestBody @Valid CategoryRegisterRequest data, UriComponentsBuilder ucb) {
-
-    Category newCategory;
-
+  public ResponseEntity<CreateResponse<CategoryCreateResponse>> register(
+      @RequestBody @Valid CategoryRegisterRequest request, UriComponentsBuilder ucb) {
     try {
-      newCategory = this.categoryService.createCategory(data);
+
+      Category newCategory = this.categoryService.createCategory(mapper.toCategory(request));
       String url = MessageFormat.format("/api/category/{0}", newCategory.getId());
-      CreateResponse response = new CreateResponse(201, "User created successfully!", true, url);
+      var response =
+          new CreateResponse<CategoryCreateResponse>(
+              201,
+              "User created successfully!",
+              true,
+              url,
+              mapper.toCategoryCreateResponse(newCategory));
       URI locationOfNewUser =
           ucb.path("/register/{id}").buildAndExpand(newCategory.getId()).toUri();
-      log.info("Category '{}' created successfully", data.name());
+      log.info("Category '{}' created successfully", request.name());
       return ResponseEntity.created(locationOfNewUser).body(response);
     } catch (Exception ex) {
-      return ResponseEntity.badRequest().body(ex.getMessage());
+      var errorResponse =
+          new CreateResponse<CategoryCreateResponse>(
+              400, "Failed to create category", false, null, null);
+      return ResponseEntity.badRequest().body(errorResponse);
     }
   }
 }
