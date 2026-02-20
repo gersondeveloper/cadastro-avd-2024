@@ -13,5 +13,4 @@ public record ProductRegisterRequest(
     int minStock,
     int maxStock,
     int stockAlert,
-    boolean isActive
-) {}
+    boolean isActive) {}
