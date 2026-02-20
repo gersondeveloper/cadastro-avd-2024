@@ -36,6 +36,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
   @Autowired MockMvc mockMvc;
   @Autowired CategoryRepository categoryRepository;
 
+  private final String PRODUCT_REGISTER_URI = "/api/product/register";
+
   private Long registerCategory(String name) {
     Category category = new Category();
     category.setName(name);
@@ -56,10 +58,11 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     payload.put("minStock", 1);
     payload.put("maxStock", 20);
     payload.put("stockAlert", 1);
+    payload.put("isActive", true);
 
     mockMvc
         .perform(
-            post("/api/product")
+            post(PRODUCT_REGISTER_URI)
                 .with(csrf())
                 .header("Api-Version", "v1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +70,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         .andExpect(status().isCreated())
         .andExpect(header().exists("Location"))
         .andExpect(
-            header().string("Location", org.hamcrest.Matchers.containsString("/api/product/")));
+            header()
+                .string("Location", org.hamcrest.Matchers.containsString(PRODUCT_REGISTER_URI)));
   }
 
   @Test
@@ -84,10 +88,11 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     payload.put("minStock", 1);
     payload.put("maxStock", 20);
     payload.put("stockAlert", 1);
+    payload.put("isActive", true);
 
     mockMvc
         .perform(
-            post("/api/product")
+            post(PRODUCT_REGISTER_URI)
                 .with(csrf())
                 .header("Api-Version", "v1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +108,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Api-Version", "v1"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
+        .andExpect(jsonPath("$.obj", hasSize(greaterThanOrEqualTo(1))));
   }
 
   @Test
@@ -121,10 +126,11 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
       payload.put("minStock", 1);
       payload.put("maxStock", 20);
       payload.put("stockAlert", 1);
+      payload.put("isActive", true);
 
       mockMvc
           .perform(
-              post("/api/product")
+              post(PRODUCT_REGISTER_URI)
                   .with(csrf())
                   .header("Api-Version", "v1")
                   .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +148,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Api-Version", "v1"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(1)));
+        .andExpect(jsonPath("$.obj", hasSize(1)));
 
     // Test second page with size 1
     mockMvc
@@ -154,7 +160,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Api-Version", "v1"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(1)));
+        .andExpect(jsonPath("$.obj", hasSize(1)));
   }
 
   @Test
@@ -171,11 +177,12 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     payload.put("minStock", 1);
     payload.put("maxStock", 20);
     payload.put("stockAlert", 1);
+    payload.put("isActive", true);
 
     String location =
         mockMvc
             .perform(
-                post("/api/product")
+                post("/api/product/register")
                     .with(csrf())
                     .header("Api-Version", "v1")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -204,7 +211,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
       // Use ObjectMapper from AbstractIntegrationTest for robust parsing
       com.fasterxml.jackson.databind.ObjectMapper om =
           new com.fasterxml.jackson.databind.ObjectMapper();
-      com.fasterxml.jackson.databind.JsonNode array = om.readTree(responseJson);
+      com.fasterxml.jackson.databind.JsonNode root = om.readTree(responseJson);
+      com.fasterxml.jackson.databind.JsonNode array = root.get("obj");
       com.fasterxml.jackson.databind.JsonNode last = array.get(array.size() - 1);
       id = last.get("id").asLong();
     }
@@ -221,7 +229,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
   void shouldReturn400_whenBodyIsMissing_onProductController() throws Exception {
     mockMvc
         .perform(
-            post("/api/product")
+            post(PRODUCT_REGISTER_URI)
                 .with(csrf())
                 .header("Api-Version", "v1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -237,7 +245,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Api-Version", "v1"))
         .andExpect(status().isForbidden())
-        .andExpect(content().string("Only ADMIN users can see list of products."));
+        .andExpect(jsonPath("$.statusText").value("Only ADMIN users can see list of products."));
   }
 
   @Test
@@ -249,6 +257,6 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Api-Version", "v1"))
         .andExpect(status().isForbidden())
-        .andExpect(content().string("Only ADMIN users can see list of products."));
+        .andExpect(jsonPath("$.statusText").value("Only ADMIN users can see list of products."));
   }
 }

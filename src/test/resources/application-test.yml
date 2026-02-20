@@ -4,7 +4,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: register-drop
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: false

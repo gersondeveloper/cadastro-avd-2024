@@ -2,22 +2,22 @@ package com.gersondeveloper.cadastroavd2024.controllers;
 
 import java.net.URI;
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.gersondeveloper.cadastroavd2024.domain.dtos.request.ProductRegisterRequest;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.CreateResponse;
 import com.gersondeveloper.cadastroavd2024.domain.dtos.response.ProductRegisterResponse;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.ProductResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.Product;
+import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.ProductService;
 import com.gersondeveloper.cadastroavd2024.mappers.ProductMapper;
 
@@ -63,39 +63,48 @@ public class ProductController {
                   null,
                   null));
     }
-    String url = MessageFormat.format("/register/{0}", newProduct.getId());
+    String url = MessageFormat.format("api/product/register/{0}", newProduct.getId());
     CreateResponse<ProductRegisterResponse> response =
         new CreateResponse<>(
             201, "Product created successfully!", true, url, mapper.toProductResponse(newProduct));
     URI locationOfNewProduct =
-        ucb.path("/register/{id}").buildAndExpand(newProduct.getId()).toUri();
+        ucb.path("api/product/register/{id}").buildAndExpand(newProduct.getId()).toUri();
     log.info("Product created with id: {}", newProduct.getId());
     return ResponseEntity.created(locationOfNewProduct).body(response);
   }
 
-  //  @Observed(name = "product.getAll")
-  //  @SecurityRequirement(name = "bearerAuth")
-  //  @GetMapping(path = "/all", version = "v1")
-  //  public ResponseEntity<?> getAll(
-  //      @RequestParam UserRole role,
-  //      @RequestParam(defaultValue = "id") String sortBy,
-  //      @RequestParam(defaultValue = "DESC") Sort.Direction direction,
-  //      Pageable pageable) {
-  //
-  //    if (role.equals(UserRole.ADMIN)) {
-  //      List<ProductRegisterResponse> products =
-  //          productService.findAll(
-  //              PageRequest.of(
-  //                  pageable.getPageNumber(),
-  //                  pageable.getPageSize(),
-  //                  pageable.getSortOr(Sort.by(direction, sortBy))));
-  //
-  //      return ResponseEntity.ok(products);
-  //    } else {
-  //      return ResponseEntity.status(HttpStatus.FORBIDDEN)
-  //          .body("Only ADMIN users can see list of products.");
-  //    }
-  //  }
+  @Observed(name = "product.getAll")
+  @SecurityRequirement(name = "bearerAuth")
+  @GetMapping(path = "/all", version = "v1")
+  public ResponseEntity<CreateResponse<List<ProductResponse>>> getAll(
+      @RequestParam UserRole role,
+      @RequestParam(defaultValue = "id") String sortBy,
+      @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+      Pageable pageable) {
+
+    if (role.equals(UserRole.ADMIN)) {
+      List<Product> products =
+          productService.findAll(
+              PageRequest.of(
+                  pageable.getPageNumber(),
+                  pageable.getPageSize(),
+                  pageable.getSortOr(Sort.by(direction, sortBy))));
+
+      var productResponseList = mapper.toProductResponseList(products);
+
+      CreateResponse<List<ProductResponse>> response =
+          new CreateResponse<>(
+              200, "Products retrieved successfully!", true, null, productResponseList);
+
+      return ResponseEntity.ok(response);
+    } else {
+      CreateResponse<List<ProductResponse>> response =
+          new CreateResponse<>(
+              403, "Only ADMIN users can see list of products.", false, null, null);
+
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+  }
 
   @Observed(name = "product.getById")
   @SecurityRequirement(name = "bearerAuth")
