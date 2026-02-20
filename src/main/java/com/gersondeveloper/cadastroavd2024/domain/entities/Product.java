@@ -1,5 +1,6 @@
 package com.gersondeveloper.cadastroavd2024.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBase;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UomBuy;
 
@@ -46,4 +47,8 @@ public class Product extends BaseEntity {
 
   @Column(name = "stock_alert", nullable = false)
   private int stockAlert = 1; // alert for minimum stock
+
+  @Column(name = "is_active")
+  @JsonProperty("isActive")
+  private boolean active = true; // product active or not
 }

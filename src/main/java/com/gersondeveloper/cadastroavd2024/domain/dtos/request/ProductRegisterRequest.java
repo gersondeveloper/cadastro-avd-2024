@@ -12,4 +12,6 @@ public record ProductRegisterRequest(
     Double conversionBaseToBuy,
     int minStock,
     int maxStock,
-    int stockAlert) {}
+    int stockAlert,
+    boolean isActive
+) {}

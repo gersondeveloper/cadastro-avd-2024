@@ -19,6 +19,7 @@ public abstract class ProductMapper {
   @Autowired private CategoryRepository categoryRepository;
 
   @Mapping(source = "uomBase", target = "umBase")
+  @Mapping(source = "active", target = "isActive")
   public abstract ProductRegisterResponse toProductResponse(Product product);
 
   public abstract List<ProductRegisterResponse> toProductResponseList(List<Product> products);
@@ -26,6 +27,7 @@ public abstract class ProductMapper {
   @Mapping(source = "baseUnitOfMeasurement", target = "uomBase")
   @Mapping(source = "buyUnitOfMeasurement", target = "uomBuy")
   @Mapping(source = "categoryId", target = "category")
+  @Mapping(source = "isActive", target = "active")
   public abstract Product toProduct(ProductRegisterRequest request);
 
   public Category map(Long id) {
