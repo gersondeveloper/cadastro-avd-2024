@@ -7,8 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.gersondeveloper.cadastroavd2024.domain.dtos.request.UserRegisterRequest;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponse;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserRegisterResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.User;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.domain.interfaces.UserRepository;
@@ -43,12 +42,12 @@ public class UserService {
   }
 
   @Observed(name = "user.list-all")
-  public List<UserResponse> findAll(PageRequest pageRequest) {
+  public List<UserRegisterResponse> findAll(PageRequest pageRequest) {
     log.info("Listing all users");
     return mapper.toUserResponseList(repository.findAll(pageRequest).getContent());
   }
 
-  public List<UserResponse> findAllByRole(UserRole role, PageRequest pageRequest) {
+  public List<UserRegisterResponse> findAllByRole(UserRole role, PageRequest pageRequest) {
     return mapper.toUserResponseList(repository.findAllByRole(role, pageRequest).getContent());
   }
 
@@ -71,18 +70,18 @@ public class UserService {
   }
 
   @Observed(name = "user.create")
-  public User registerNewUser(UserRegisterRequest user) {
-    if (findByEmail(user.email()) != null) {
+  public User registerNewUser(User user) {
+    if (findByEmail(user.getEmail()) != null) {
       throw new ValidationException("User already exists");
     }
-    String encodedPassword = passwordEncoder.encode(user.password());
+    String encodedPassword = passwordEncoder.encode(user.getPassword());
     User newUser =
         User.builder()
-            .email(user.email())
-            .name(user.name())
-            .contactName(user.name())
+            .email(user.getEmail())
+            .name(user.getName())
+            .contactName(user.getName())
             .password(encodedPassword)
-            .role(user.role())
+            .role(user.getRole())
             .build();
     save(newUser);
     log.info("User {} created witth success!", newUser.getName());

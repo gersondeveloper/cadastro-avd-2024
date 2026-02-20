@@ -24,7 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.gersondeveloper.cadastroavd2024.configuration.ObjectMapperTestConfig;
-import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserResponse;
+import com.gersondeveloper.cadastroavd2024.domain.dtos.response.UserRegisterResponse;
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 import com.gersondeveloper.cadastroavd2024.infra.services.UserService;
 
@@ -45,7 +45,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
           + " DESC")
   void getAllUsers_asAdminWithSortDesc_returnsSortedUsers() throws Exception {
     var u1 =
-        new UserResponse(
+        new UserRegisterResponse(
             1L,
             "Alice",
             "alice@test.com",
@@ -55,7 +55,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
             LocalDateTime.now(),
             true);
     var u2 =
-        new UserResponse(
+        new UserRegisterResponse(
             2L,
             "Bob",
             "bob@test.com",
@@ -83,7 +83,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
       "GET /api/user/all?role=ADMIN&sortBy=name&direction=ASC returns all users sorted by name ASC")
   void getAllUsers_asAdminWithSortAsc_returnsSortedUsers() throws Exception {
     var u1 =
-        new UserResponse(
+        new UserRegisterResponse(
             1L,
             "Alice",
             "alice@test.com",
@@ -93,7 +93,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
             LocalDateTime.now(),
             true);
     var u2 =
-        new UserResponse(
+        new UserRegisterResponse(
             2L,
             "Bob",
             "bob@test.com",
@@ -120,7 +120,7 @@ class UserControllerGetAllUsersIntegrationTest extends AbstractIntegrationTest {
   @DisplayName("GET /api/user/all?role=USER returns only customers")
   void getAllUsers_asUser_returnsCustomers() throws Exception {
     var c1 =
-        new UserResponse(
+        new UserRegisterResponse(
             3L,
             "Carol",
             "carol@test.com",

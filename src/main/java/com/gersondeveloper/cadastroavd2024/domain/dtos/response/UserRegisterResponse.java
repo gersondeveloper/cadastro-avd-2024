@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.gersondeveloper.cadastroavd2024.domain.entities.enums.UserRole;
 
-public record UserResponse(
+public record UserRegisterResponse(
     long id,
     String name,
     String email,
