@@ -83,18 +83,15 @@ public class ProductController {
       Pageable pageable) {
 
     if (role.equals(UserRole.ADMIN)) {
-      List<Product> products =
+      List<ProductResponse> products =
           productService.findAll(
               PageRequest.of(
                   pageable.getPageNumber(),
                   pageable.getPageSize(),
                   pageable.getSortOr(Sort.by(direction, sortBy))));
 
-      var productResponseList = mapper.toProductResponseList(products);
-
       CreateResponse<List<ProductResponse>> response =
-          new CreateResponse<>(
-              200, "Products retrieved successfully!", true, null, productResponseList);
+          new CreateResponse<>(200, "Products retrieved successfully!", true, null, products);
 
       return ResponseEntity.ok(response);
     } else {

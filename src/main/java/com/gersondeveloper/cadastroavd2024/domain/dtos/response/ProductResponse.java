@@ -14,5 +14,5 @@ public record ProductResponse(
     int minStock,
     int maxStock,
     int stockAlert,
-    Long categoryId,
+    CategoryResponse category,
     boolean isActive) {}
